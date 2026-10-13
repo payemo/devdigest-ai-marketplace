@@ -9,7 +9,7 @@ Claude Code plugin marketplace.
 
 ```
 /plugin marketplace add <owner>/devdigest-ai-marketplace
-/plugin install hello-devdigest@devdigest-marketplace
+/plugin install <plugin>@devdigest-marketplace
 ```
 
 For a private repository, git credentials must already be stored on your machine
@@ -69,7 +69,7 @@ set it in `plugin.json` only and bump it on each release; otherwise users stay o
 
 Two kinds of plugin therefore exist, and they are released and rolled back differently:
 
-| | Unversioned (no `version`, e.g. `hello-devdigest`) | Versioned (`version` in `plugin.json`) |
+| | Unversioned (no `version`) | Versioned (`version` in `plugin.json`) |
 |---|---|---|
 | Users get an update | on every commit to the default branch | only when the `version` string changes |
 | Release | merge to `main` | `release.mjs prepare` → merge → `release.mjs tag` |

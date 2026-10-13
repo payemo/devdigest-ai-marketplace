@@ -4,11 +4,5 @@
   "owner": {
     "name": "DevDigest"
   },
-  "plugins": [
-    {
-      "name": "hello-devdigest",
-      "source": "./plugins/hello-devdigest",
-      "description": "Sample plugin with a single greeting skill"
-    }
-  ]
+  "plugins": []
 }
