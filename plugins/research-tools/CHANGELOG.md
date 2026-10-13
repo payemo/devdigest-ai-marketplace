@@ -6,6 +6,11 @@ git tags are `research-tools--v<version>`.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-13
+
+### Changed
+- Roll back to 1.0.0: restores the content of 1.0.0, replacing 1.1.0. Reason: test version's rollback.
+
 ## [1.1.0] - 2026-10-13
 
 ### Added
