@@ -42,7 +42,7 @@
   "hero": {
     "title": "Find skills, agents and plugins for Claude Code",
     "try": "Try:",
-    "examples": ["code review", "commit messages", "testing", "docs"]
+    "examples": ["spec driven development", "architecture review", "react testing", "security"]
   },
   "search": {
     "label": "Search the catalog",

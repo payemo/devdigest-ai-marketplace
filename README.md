@@ -41,7 +41,7 @@ Installing `sdd-engineering` installs the other three automatically:
 ```
 .claude-plugin/marketplace.json   catalog
 plugins/<name>/                   one directory per plugin (only this directory is shipped to users)
-scripts/                          repo tooling, never shipped: linter, release and rollback scripts, and their tests
+scripts/                          repo tooling, never shipped: linter, catalog generator, release and rollback scripts, and their tests
 catalog-site/                     search site for the catalog, published to GitHub Pages (see its README)
 .github/workflows/                validate.yml (marketplace harness), pages.yml (catalog site), release.yml (plugin releases)
 ```
@@ -57,7 +57,7 @@ Each concern is its own workflow, so a red mark always tells you which part brok
 | Workflow | Checks shown on a commit or PR | Covers |
 |---|---|---|
 | **Validate marketplace** (`validate.yml`) | `lint` | the marketplace harness: structural linter and the `scripts/` self-tests (linter, release, rollback) |
-| **Catalog site** (`pages.yml`) | `Unit tests` · `Build site` · `Deploy to GitHub Pages` | the website only. Runs when `catalog-site/` changes; PRs run tests and the build but never deploy |
+| **Catalog site** (`pages.yml`) | `Unit tests` · `Build site` · `Deploy to GitHub Pages` | the website. Its data (`catalog.json`, `feed.xml`, `llms.txt`) is generated from `plugins/` at build time. Runs when `catalog-site/`, `plugins/`, `.claude-plugin/` or the catalog scripts change; PRs run tests and the build but never deploy |
 | **Publish plugin release** (`release.yml`) | `release` | a pushed `<plugin>--v<X.Y.Z>` tag |
 
 ## Adding a plugin
@@ -70,7 +70,7 @@ Each concern is its own workflow, so a red mark always tells you which part brok
 
 ```bash
 node scripts/validate-marketplace.mjs --strict   # structural linter, no dependencies (see below)
-node --test "scripts/*.test.mjs"                 # self-tests: linter, release and rollback scripts
+node --test "scripts/*.test.mjs"                 # self-tests: linter, catalog generator, release and rollback scripts
 claude plugin validate .                         # official validator (needs the CLI)
 ```
 

@@ -61,7 +61,7 @@ describe('helpers', () => {
     expect(t('card.bundleAddAria', { plugin: 'x' })).toBe('Add x to bundle');
   });
   it('returns lists', () => {
-    expect(list('hero.examples')).toContain('code review');
+    expect(list('hero.examples')).toContain('architecture review');
   });
   it('rich() maps <tag> markup to elements and keeps surrounding text', () => {
     const out = rich('footer.built', { date: '2026-10-13', sha: 'abc' }, { a: (txt) => `[${txt}]` });
