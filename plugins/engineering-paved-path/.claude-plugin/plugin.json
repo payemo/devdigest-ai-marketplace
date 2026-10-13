@@ -1,0 +1,10 @@
+{
+  "name": "engineering-paved-path",
+  "version": "1.0.0",
+  "description": "Shared engineering skills: React, Next.js, Fastify, onion architecture, React Testing Library and OWASP-based security guidance",
+  "author": {
+    "name": "DevDigest"
+  },
+  "license": "MIT",
+  "keywords": ["react", "nextjs", "fastify", "architecture", "testing", "security", "best-practices"]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "architecture-review",
+  "version": "1.0.0",
+  "description": "A read-only architecture-reviewer agent that checks a diff for onion-architecture layering and dependency-direction violations",
+  "author": {
+    "name": "DevDigest"
+  },
+  "license": "MIT",
+  "keywords": ["architecture", "review", "onion-architecture", "layering", "agent"],
+  "dependencies": [
+    { "name": "engineering-paved-path", "version": "^1.0.0" }
+  ]
+}
