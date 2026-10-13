@@ -1,0 +1,31 @@
+name: Publish plugin release
+
+# Runs when a plugin release tag (<plugin>--v<X.Y.Z>) is pushed, e.g. by `node scripts/release.mjs tag <plugin> --push`.
+# Re-verifies the tag, then publishes a GitHub Release whose notes are the plugin's CHANGELOG section.
+on:
+  push:
+    tags: ["*--v*.*.*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # all tags: dependency ranges are checked against them
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify the tag against plugin.json, CHANGELOG and dependencies
+        run: node scripts/release.mjs verify "$GITHUB_REF_NAME" --notes > "$RUNNER_TEMP/notes.md"
+      - name: Structural lint
+        run: node scripts/validate-marketplace.mjs --strict
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "$GITHUB_REF_NAME" --verify-tag --latest=false
+          --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md"

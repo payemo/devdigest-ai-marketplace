@@ -11,6 +11,11 @@ on:
       - "catalog-site/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag or commit SHA to build and deploy (empty = the selected branch). Use an older commit to roll the site back."
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -27,6 +32,8 @@ jobs:
         working-directory: catalog-site
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
