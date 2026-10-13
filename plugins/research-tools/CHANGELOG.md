@@ -6,6 +6,8 @@ git tags are `research-tools--v<version>`.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-13
+
 ### Added
 - `researcher` agent — the repo-research report now has an `**As of:**` line with the HEAD commit SHA and date,
   so a report can be re-checked against the exact state of the repository it describes.
