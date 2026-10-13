@@ -48,8 +48,9 @@ To add a language, copy `en.json`, translate it, and point `src/i18n/index.js` a
 
 ## Deployment
 
-`.github/workflows/pages.yml` runs tests and builds on every PR touching this folder, and
-deploys `dist/` to GitHub Pages on pushes to `main`. One-time setting: repository →
+`.github/workflows/pages.yml` ("Catalog site") is separate from the marketplace checks in `validate.yml`. It shows three
+checks: **Unit tests**, **Build site** and **Deploy to GitHub Pages**. PRs touching this folder run the first two; pushes
+to `main` also deploy `dist/`. To redeploy an older commit, run the workflow manually and set `ref`. One-time setting: repository →
 Settings → Pages → Source: **GitHub Actions**.
 
 `vite.config.js` uses `base: './'`, so the same build works under `/<repo>/` and at `/`.

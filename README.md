@@ -1,5 +1,8 @@
 # devdigest-ai-marketplace
 
+[![Validate marketplace](https://github.com/payemo/devdigest-ai-marketplace/actions/workflows/validate.yml/badge.svg)](https://github.com/payemo/devdigest-ai-marketplace/actions/workflows/validate.yml)
+[![Catalog site](https://github.com/payemo/devdigest-ai-marketplace/actions/workflows/pages.yml/badge.svg)](https://github.com/payemo/devdigest-ai-marketplace/actions/workflows/pages.yml)
+
 Claude Code plugin marketplace.
 
 ## Install
@@ -19,12 +22,22 @@ For a private repository, git credentials must already be stored on your machine
 plugins/<name>/                   one directory per plugin (only this directory is shipped to users)
 scripts/                          repo tooling, never shipped: linter, release and rollback scripts, and their tests
 catalog-site/                     search site for the catalog, published to GitHub Pages (see its README)
-.github/workflows/                validate.yml (lint + tests), pages.yml (site), release.yml (plugin releases)
+.github/workflows/                validate.yml (marketplace harness), pages.yml (catalog site), release.yml (plugin releases)
 ```
 
 Runtime scripts used by a plugin's hooks/MCP servers belong in `plugins/<name>/scripts/`
 and are referenced as `${CLAUDE_PLUGIN_ROOT}/scripts/...`. The root `scripts/` folder is not
 available after installation.
+
+## CI at a glance
+
+Each concern is its own workflow, so a red mark always tells you which part broke:
+
+| Workflow | Checks shown on a commit or PR | Covers |
+|---|---|---|
+| **Validate marketplace** (`validate.yml`) | `lint` | the marketplace harness: structural linter and the `scripts/` self-tests (linter, release, rollback) |
+| **Catalog site** (`pages.yml`) | `Unit tests` · `Build site` · `Deploy to GitHub Pages` | the website only. Runs when `catalog-site/` changes; PRs run tests and the build but never deploy |
+| **Publish plugin release** (`release.yml`) | `release` | a pushed `<plugin>--v<X.Y.Z>` tag |
 
 ## Adding a plugin
 
