@@ -1,8 +1,10 @@
-import { useId, useRef, useState, useEffect } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
+import { rich, t } from '../i18n/index.js';
 import { installCommands, settingsJson } from '../lib/bundle.js';
 import { CheckIcon, CloseIcon, CopyIcon } from './Icons.jsx';
 
-const MODES = [['claude', 'In Claude Code'], ['shell', 'From the shell']];
+const MODES = [['claude', 'bundle.modeClaude'], ['shell', 'bundle.modeShell']];
+const code = (text) => <code>{text}</code>;
 
 function CopyButton({ text, label, primary, onToast }) {
   const [done, setDone] = useState(false);
@@ -16,12 +18,12 @@ function CopyButton({ text, label, primary, onToast }) {
       clearTimeout(timer.current);
       timer.current = setTimeout(() => setDone(false), 2000);
     } catch {
-      onToast('Copy blocked — select the text and press Ctrl+C / ⌘C.');
+      onToast(t('bundle.copyBlocked'));
     }
   }
   return (
     <button type="button" className={`btn${primary ? ' btn-primary' : ''}`} onClick={copy} style={!primary && done ? { color: 'var(--success)' } : undefined}>
-      {done ? <CheckIcon size={15} /> : <CopyIcon size={15} />}<span>{done ? 'Copied' : label}</span>
+      {done ? <CheckIcon size={15} /> : <CopyIcon size={15} />}<span>{done ? t('bundle.copied') : label}</span>
     </button>
   );
 }
@@ -33,20 +35,22 @@ export default function BundlePanel({ plugins, marketplace, variant = 'panel', o
   const names = plugins.map((p) => p.name);
   const externals = plugins.filter((p) => p.external);
   const n = plugins.length;
+  const commands = installCommands(names, mode, marketplace);
+  const json = settingsJson(names, marketplace);
 
   return (
     <section aria-labelledby={`${uid}-h`} className={`bundle bundle-${variant}`}>
       <div className="bundle-head">
-        <h2 id={`${uid}-h`}>Your bundle <span className={`count${n ? ' has' : ''}`}>{n}</span></h2>
+        <h2 id={`${uid}-h`}>{t('bundle.title')} <span className={`count${n ? ' has' : ''}`}>{n}</span></h2>
         <div className="bundle-head-actions">
           {n > 0 && (
             <>
-              <button type="button" className="link-btn accent" onClick={onShare}>Share link</button>
-              <button type="button" className="link-btn" onClick={onClear}>Clear</button>
+              <button type="button" className="link-btn accent" onClick={onShare}>{t('bundle.share')}</button>
+              <button type="button" className="link-btn" onClick={onClear}>{t('bundle.clear')}</button>
             </>
           )}
           {onClose && (
-            <button type="button" className="link-btn icon" onClick={onClose} aria-label={variant === 'sheet' ? 'Close bundle' : 'Collapse bundle panel'}>
+            <button type="button" className="link-btn icon" onClick={onClose} aria-label={variant === 'sheet' ? t('bundle.closeSheet') : t('bundle.closePanel')}>
               <CloseIcon />
             </button>
           )}
@@ -54,9 +58,7 @@ export default function BundlePanel({ plugins, marketplace, variant = 'panel', o
       </div>
 
       {n === 0 ? (
-        <p className="bundle-empty">
-          Select plugins with the <strong>+</strong> button on any card. Commands and a team settings snippet appear here.
-        </p>
+        <p className="bundle-empty">{rich('bundle.empty', {}, { b: (text) => <strong>{text}</strong> })}</p>
       ) : (
         <>
           <ul className="bundle-list">
@@ -64,38 +66,38 @@ export default function BundlePanel({ plugins, marketplace, variant = 'panel', o
               <li key={p.name}>
                 <CheckIcon size={14} className="accent-stroke" />
                 <span className="mono grow">{p.name}</span>
-                {p.external && <span className="badge-outline badge-sm">External</span>}
-                <button type="button" className="link-btn" onClick={() => onRemove(p.name)} aria-label={`Remove ${p.name} from bundle`}>
-                  remove <span aria-hidden="true">×</span>
+                {p.external && <span className="badge-outline badge-sm">{t('bundle.external')}</span>}
+                <button type="button" className="link-btn" onClick={() => onRemove(p.name)} aria-label={t('bundle.removeAria', { plugin: p.name })}>
+                  {t('bundle.remove')} <span aria-hidden="true">×</span>
                 </button>
               </li>
             ))}
           </ul>
 
           <fieldset className="bundle-install">
-            <legend>Install with</legend>
+            <legend>{t('bundle.installWith')}</legend>
             <div className="segmented">
-              {MODES.map(([key, label]) => (
+              {MODES.map(([key, labelKey]) => (
                 <label key={key} className={mode === key ? 'is-on' : ''}>
                   <input type="radio" name={`${uid}-mode`} value={key} checked={mode === key} onChange={() => setMode(key)} />
-                  <span>{label}</span>
+                  <span>{t(labelKey)}</span>
                 </label>
               ))}
             </div>
-            <pre aria-label="Install commands">{installCommands(names, mode, marketplace)}</pre>
-            <CopyButton primary label="Copy commands" text={installCommands(names, mode, marketplace)} onToast={onToast} />
+            <pre aria-label={t('bundle.commandsAria')}>{commands}</pre>
+            <CopyButton primary label={t('bundle.copyCommands')} text={commands} onToast={onToast} />
           </fieldset>
 
           <div className="bundle-share">
-            <h3>Share with your team <span className="mono muted">settings.json</span></h3>
-            <pre aria-label="settings.json snippet">{settingsJson(names, marketplace)}</pre>
+            <h3>{rich('bundle.shareTitle', {}, { code: (text) => <span className="mono muted">{text}</span> })}</h3>
+            <pre aria-label={t('bundle.jsonAria')}>{json}</pre>
             <div className="bundle-share-row">
-              <CopyButton label="Copy JSON" text={settingsJson(names, marketplace)} onToast={onToast} />
-              <span className="muted small">Put this in <code>.claude/settings.json</code></span>
+              <CopyButton label={t('bundle.copyJson')} text={json} onToast={onToast} />
+              <span className="muted small">{rich('bundle.putIn', {}, { code })}</span>
             </div>
             {externals.length > 0 && (
               <p className="note">
-                Teammates still run <code>claude plugin install {externals.length === 1 ? externals[0].name : '<name>'}@{marketplace.name} --scope project</code> once for plugins whose files live outside this repository.
+                {rich('bundle.externalNote', { name: externals.length === 1 ? externals[0].name : '<name>', marketplace: marketplace.name }, { code })}
               </p>
             )}
           </div>

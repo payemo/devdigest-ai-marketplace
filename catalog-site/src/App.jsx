@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { GH } from './config.js';
+import { t } from './i18n/index.js';
 import { useCatalog } from './hooks/useCatalog.js';
 import { useDelayedFlag } from './hooks/useDelayedFlag.js';
 import { useMediaQuery } from './hooks/useMediaQuery.js';
@@ -115,6 +116,7 @@ export default function App() {
   }, [page, navigate]);
 
   useEffect(() => { if (desktop) setSheetOpen(false); }, [desktop]);
+  useEffect(() => { document.title = t(page === CHANGELOG_PAGE ? 'meta.titleChangelog' : 'meta.title'); }, [page]);
 
   const toggleBundle = useCallback((name) => {
     setBundle((b) => (b.includes(name) ? b.filter((n) => n !== name) : [...b, name]));
@@ -126,14 +128,14 @@ export default function App() {
     const link = new URL(buildUrl(stateForUrl, { shareBundle: true }), location.href).href;
     try {
       await navigator.clipboard.writeText(link);
-      showToast('Bundle link copied');
+      showToast(t('bundle.linkCopied'));
     } catch {
-      showToast('Copy blocked — link is in the address bar');
+      showToast(t('bundle.linkBlocked'));
       history.replaceState(null, '', buildUrl(stateForUrl, { shareBundle: true }));
     }
   }, [stateForUrl, showToast]);
 
-  const suggestHref = `${GH}/issues/new?template=plugin-suggestion.yml&title=${`Plugin suggestion: ${query.trim()}`.trim().replace(/ /g, '+').slice(0, 300)}`;
+  const suggestHref = `${GH}/issues/new?template=plugin-suggestion.yml&title=${t('links.suggestTitle', { query: query.trim() }).trim().replace(/ /g, '+').slice(0, 300)}`;
   const bundleRows = bundle.map((name) => ({ name, external: catalog?.externalPlugins.has(name) }));
   const showFab = !desktop && page === SEARCH_PAGE && !sheetOpen && !!catalog;
 
@@ -155,20 +157,20 @@ export default function App() {
         )}
         {page === CHANGELOG_PAGE && catalog && <Changelog catalog={catalog} plugin={plugin} onPlugin={setPlugin} />}
         {page === CHANGELOG_PAGE && !catalog && status === 'error' && (
-          <div className="wrap"><div role="alert" className="state"><h2>Couldn't load the catalog.</h2><button type="button" className="btn btn-primary" onClick={retry}>Retry</button></div></div>
+          <div className="wrap"><div role="alert" className="state"><h2>{t('state.errorTitle')}</h2><button type="button" className="btn btn-primary" onClick={retry}>{t('state.retry')}</button></div></div>
         )}
       </main>
       <Footer suggestHref={suggestHref} catalog={catalog} />
 
       {showFab && (
-        <button type="button" className={`fab${bundle.length ? ' has' : ''}`} onClick={() => setSheetOpen(true)} aria-haspopup="dialog" aria-label={`Open bundle, ${bundle.length} plugin${bundle.length === 1 ? '' : 's'}`}>
-          <PlusIcon size={16} /><span>Bundle ({bundle.length})</span>
+        <button type="button" className={`fab${bundle.length ? ' has' : ''}`} onClick={() => setSheetOpen(true)} aria-haspopup="dialog" aria-label={t('bundle.tabAria', { count: bundle.length })}>
+          <PlusIcon size={16} /><span>{t('bundle.tab', { count: bundle.length })}</span>
         </button>
       )}
       {sheetOpen && !desktop && catalog && (
         <div className="sheet-wrap">
-          <button type="button" className="scrim" aria-label="Close bundle" onClick={() => setSheetOpen(false)} />
-          <div role="dialog" aria-modal="true" aria-label="Your bundle" className="sheet">
+          <button type="button" className="scrim" aria-label={t('bundle.closeSheet')} onClick={() => setSheetOpen(false)} />
+          <div role="dialog" aria-modal="true" aria-label={t('bundle.dialog')} className="sheet">
             <div className="grabber" aria-hidden="true" />
             <BundlePanel variant="sheet" plugins={bundleRows} marketplace={catalog.marketplace} onRemove={removeFromBundle} onClear={clearBundle} onClose={() => setSheetOpen(false)} onShare={shareBundle} onToast={showToast} />
           </div>

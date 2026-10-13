@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "lang": "en",
+    "title": "DevDigest Marketplace",
+    "titleChangelog": "What's new · DevDigest Marketplace",
+    "description": "Find skills, agents and plugins for Claude Code and install them with one copy-paste."
+  },
+  "noscript": {
+    "title": "This site needs JavaScript to search.",
+    "body": "You can browse every plugin in the <a>repository on GitHub</a>."
+  },
+  "brand": { "name": "DevDigest", "suffix": "Marketplace" },
+  "nav": {
+    "main": "Main",
+    "search": "Search",
+    "changelog": "What's new",
+    "github": "GitHub",
+    "suggest": "Suggest a plugin",
+    "menu": "Menu",
+    "themeToLight": "Switch to light theme",
+    "themeToDark": "Switch to dark theme"
+  },
+  "footer": {
+    "label": "Footer",
+    "suggest": "Suggest a plugin",
+    "feed": "Atom feed",
+    "catalog": "catalog.json",
+    "llms": "llms.txt",
+    "source": "Source on GitHub",
+    "built": "Catalog built {date} · commit <a>{sha}</a>"
+  },
+  "type": {
+    "all": "All",
+    "singular": { "plugin": "Plugin", "skill": "Skill", "agent": "Agent", "command": "Command", "hook": "Hook", "mcp": "MCP" },
+    "plural": { "plugin": "Plugins", "skill": "Skills", "agent": "Agents", "command": "Commands", "hook": "Hooks", "mcp": "MCP" }
+  },
+  "date": {
+    "today": "today",
+    "yesterday": "yesterday",
+    "daysAgo": "{count}d ago"
+  },
+  "hero": {
+    "title": "Find skills, agents and plugins for Claude Code",
+    "try": "Try:",
+    "examples": ["code review", "commit messages", "testing", "docs"]
+  },
+  "search": {
+    "label": "Search the catalog",
+    "placeholder": "Describe what you need, e.g. “review pull requests”",
+    "clear": "Clear search",
+    "region": "Search results"
+  },
+  "filters": {
+    "type": "Type",
+    "category": "Category",
+    "any": "any",
+    "reset": "Reset filters",
+    "sort": "Sort",
+    "sortBest": "Best match",
+    "sortName": "Name A–Z",
+    "sortUpdated": "Recently updated",
+    "byType": "type “{type}”",
+    "byCategory": "category “{category}”",
+    "and": " and "
+  },
+  "results": {
+    "loading": "Loading…",
+    "count": { "one": "{count} result", "other": "{count} results" },
+    "items": { "one": "{count} item", "other": "{count} items" }
+  },
+  "state": {
+    "errorTitle": "Couldn't load the catalog.",
+    "errorBody": "Check your connection and try again, or browse the plugins directly on GitHub.",
+    "retry": "Retry",
+    "openRepo": "Open repository",
+    "emptyTitle": "This marketplace has no plugins yet.",
+    "emptyBody": "Plugins appear here once they are added to <code>marketplace.json</code>.",
+    "suggest": "Suggest a plugin",
+    "noMatches": "No matches for “{query}”.",
+    "removeFilters": "Remove filters",
+    "filteringBy": " — you're filtering by {filters}.",
+    "tryFewer": "Try fewer or more general words.",
+    "popular": "Popular searches:",
+    "suggestForThis": "Suggest a plugin for this"
+  },
+  "card": {
+    "external": "External",
+    "noDescription": "No description provided.",
+    "counts": {
+      "skills": { "one": "{count} skill", "other": "{count} skills" },
+      "agents": { "one": "{count} agent", "other": "{count} agents" },
+      "commands": { "one": "{count} command", "other": "{count} commands" },
+      "hooks": { "one": "{count} hook", "other": "{count} hooks" },
+      "mcp": { "one": "{count} MCP server", "other": "{count} MCP servers" }
+    },
+    "tokens": "~{count} tokens always loaded",
+    "tokensInfo": "About this estimate",
+    "tip": "Estimate based on name and description length. Run <code>claude plugin details {plugin}</code> for the exact figure.",
+    "updated": "Updated {when}",
+    "contents": "Contents",
+    "alsoIn": "Also in {plugin}",
+    "externalNote": "Contents are in the source repository. <a>Open source repository</a>",
+    "factSource": "Source",
+    "factInstall": "Install",
+    "factUpdated": "Updated",
+    "copy": "Copy install",
+    "copied": "Copied",
+    "copyAria": "Copy install command: {command}",
+    "copiedAria": "Copied install command",
+    "copyField": "Install command — press Ctrl+C or ⌘C to copy",
+    "copyBlocked": "Copy blocked — command selected. Press Ctrl+C / ⌘C.",
+    "bundleAddPlugin": "Bundle",
+    "bundleAddOther": "Plugin",
+    "bundleIn": "In bundle",
+    "bundleAddAria": "Add {plugin} to bundle",
+    "bundleAddParentAria": "Add plugin {plugin} to bundle",
+    "bundleRemoveAria": "{plugin} is in your bundle — remove",
+    "showMore": "Show details",
+    "showLess": "Show less",
+    "moreActions": "More actions",
+    "viewSource": "View source on GitHub",
+    "editSource": "Edit on GitHub",
+    "report": "Report a problem"
+  },
+  "bundle": {
+    "title": "Your bundle",
+    "share": "Share link",
+    "clear": "Clear",
+    "closeSheet": "Close bundle",
+    "closePanel": "Collapse bundle panel",
+    "tab": "Bundle ({count})",
+    "tabAria": { "one": "Open bundle, {count} plugin", "other": "Open bundle, {count} plugins" },
+    "region": "Bundle",
+    "dialog": "Your bundle",
+    "empty": "Select plugins with the <b>+</b> button on any card. Commands and a team settings snippet appear here.",
+    "remove": "remove",
+    "removeAria": "Remove {plugin} from bundle",
+    "external": "External",
+    "installWith": "Install with",
+    "modeClaude": "In Claude Code",
+    "modeShell": "From the shell",
+    "commandsAria": "Install commands",
+    "copyCommands": "Copy commands",
+    "copied": "Copied",
+    "shareTitle": "Share with your team <code>settings.json</code>",
+    "jsonAria": "settings.json snippet",
+    "copyJson": "Copy JSON",
+    "putIn": "Put this in <code>.claude/settings.json</code>",
+    "externalNote": "Teammates still run <code>claude plugin install {name}@{marketplace} --scope project</code> once for plugins whose files live outside this repository.",
+    "copyBlocked": "Copy blocked — select the text and press Ctrl+C / ⌘C.",
+    "linkCopied": "Bundle link copied",
+    "linkBlocked": "Copy blocked — link is in the address bar"
+  },
+  "changelog": {
+    "title": "What's new",
+    "subtitle": "Recent changes to plugins in this marketplace, from git history.",
+    "feed": "Atom feed",
+    "filter": "Filter",
+    "allPlugins": "All plugins",
+    "marketplace": "marketplace",
+    "none": "No changes to show.",
+    "showOnly": "Show only {plugin}",
+    "commitAria": "Commit {sha} on GitHub",
+    "limit": "Showing the last 100 commits that touch plugins or the marketplace."
+  },
+  "links": {
+    "suggestTitle": "Plugin suggestion: {query}",
+    "problemTitle": "[{plugin}] "
+  }
+}

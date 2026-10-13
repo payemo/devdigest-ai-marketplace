@@ -26,10 +26,25 @@ In dev, `?simulate=loading|error|empty` previews those states, e.g. http://local
 index.html, changelog.html   the two pages (one shared bundle)
 public/catalog.json          catalog data, shape = spec §11.1 (copied to dist/ as-is)
 src/lib/                     pure logic: search, URL state, bundle output, formatting (+ tests)
-src/components/, src/hooks/  React UI
+src/components/, src/hooks/  React UI (no literal text: components reference message keys)
+src/locales/en.json          ALL user-facing text, in one file
+src/i18n/                    t() / list() / rich() lookup helpers + the guard tests
 src/styles.css               design tokens (light/dark) + component styles
 design/                      the original Claude Design prototype, for reference only (not built)
 ```
+
+## Text and translations
+
+Every string a visitor can read lives in `src/locales/en.json`. Components never contain literal text; they call
+`t('results.count', { count })`, `list('hero.examples')` or `rich('card.tip', params, { code: … })` (for messages with
+`<code>…</code>` or `<a>…</a>` markup, rendered as React elements, never as HTML). Plural messages are
+`{ "one": "…", "other": "…" }` and pick the form from `count`. The static HTML pages (`<title>`, description,
+`<noscript>`) use `%t:some.key%` placeholders, filled from the same file at build time.
+
+`npm test` enforces it (`src/i18n/i18n.test.js`): every key used in code exists, no message is unused, and a JSX parser
+fails the build if a component contains literal text, a literal `aria-label`/`title`/`placeholder`, or a literal toast.
+To add a language, copy `en.json`, translate it, and point `src/i18n/index.js` at it. The search vocabulary
+(stop words, synonyms in `src/lib/synonyms.json`) is language data too, but it is not UI text and stays in `src/lib/`.
 
 ## Deployment
 

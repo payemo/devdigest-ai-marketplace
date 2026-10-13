@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="%t:meta.lang%">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DevDigest Marketplace</title>
-    <meta name="description" content="Find skills, agents and plugins for Claude Code and install them with one copy-paste." />
+    <title>%t:meta.title%</title>
+    <meta name="description" content="%t:meta.description%" />
     <script>
       // Apply the saved theme before first paint to avoid a light/dark flash.
       try {
@@ -17,8 +17,8 @@
     <div id="root"></div>
     <noscript>
       <div class="noscript">
-        <strong>This site needs JavaScript to search.</strong>
-        You can browse every plugin in the <a href="https://github.com/payemo/devdigest-ai-marketplace">repository on GitHub</a>.
+        <strong>%t:noscript.title%</strong>
+        %t:noscript.body%
       </div>
     </noscript>
     <script type="module" src="/src/main.jsx"></script>

@@ -1,7 +1,6 @@
 import SYNONYM_GROUPS from './synonyms.json';
 
 export const TYPES = ['plugin', 'skill', 'agent', 'command', 'hook', 'mcp'];
-export const PLURAL = { plugin: 'Plugins', skill: 'Skills', agent: 'Agents', command: 'Commands', hook: 'Hooks', mcp: 'MCP' };
 
 const STOP = new Set(
   'i,need,a,an,the,for,to,of,that,which,with,my,me,want,looking,something,some,is,are,can,and,or,in,on,it,this,please,would,like,any,how,what,will,we,our,you'.split(','),

@@ -1,24 +1,24 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { GH } from '../config.js';
+import { rich, t } from '../i18n/index.js';
 import { relativeDate } from '../lib/format.js';
 import Highlight from './Highlight.jsx';
-import { CheckIcon, ChevronIcon, CopyIcon, DotsIcon, InfoIcon, PlusIcon } from './Icons.jsx';
+import { CheckIcon, ChevronIcon, CopyIcon, DotsIcon, ExtMark, InfoIcon, PlusIcon } from './Icons.jsx';
 
-const LABEL = { plugin: 'Plugin', skill: 'Skill', agent: 'Agent', command: 'Command', hook: 'Hook', mcp: 'MCP' };
+const COUNT_ORDER = ['skills', 'agents', 'commands', 'hooks', 'mcp'];
 
 function countsLine(item) {
   if (item.type !== 'plugin' || item.external || !item.counts) return '';
-  const order = [['skills', 'skill'], ['agents', 'agent'], ['commands', 'command'], ['hooks', 'hook'], ['mcp', 'MCP server']];
-  return order.filter(([k]) => item.counts[k]).map(([k, l]) => `${item.counts[k]} ${l}${item.counts[k] > 1 ? 's' : ''}`).join(' · ');
+  return COUNT_ORDER.filter((k) => item.counts[k]).map((k) => t(`card.counts.${k}`, { count: item.counts[k] })).join(' · ');
 }
 
 function menuItems(item, pluginName) {
   const isPlugin = item.type === 'plugin';
   const source = item.external ? item.sourceUrl : `${GH}/${isPlugin ? 'tree' : 'blob'}/main/${item.path}`;
   return [
-    { label: 'View source on GitHub', href: source },
-    ...(item.external ? [] : [{ label: 'Edit on GitHub', href: `${GH}/edit/main/${isPlugin ? `${item.path}/.claude-plugin/plugin.json` : item.path}` }]),
-    { label: 'Report a problem', href: `${GH}/issues/new?template=problem-report.yml&title=${encodeURIComponent(`[${pluginName}] `)}&artifact=${encodeURIComponent(item.path || '')}` },
+    { id: 'view', label: t('card.viewSource'), href: source },
+    ...(item.external ? [] : [{ id: 'edit', label: t('card.editSource'), href: `${GH}/edit/main/${isPlugin ? `${item.path}/.claude-plugin/plugin.json` : item.path}` }]),
+    { id: 'report', label: t('card.report'), href: `${GH}/issues/new?template=problem-report.yml&title=${encodeURIComponent(t('links.problemTitle', { plugin: pluginName }))}&artifact=${encodeURIComponent(item.path || '')}` },
   ];
 }
 
@@ -57,14 +57,17 @@ export default function Card({ item, terms, components, inBundle, onToggleBundle
       copyTimer.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       setFallback(true);
-      onToast?.('Copy blocked — command selected. Press Ctrl+C / ⌘C.');
+      onToast?.(t('card.copyBlocked'));
     }
   }
 
-  const bundleLabel = inBundle ? 'In bundle' : item.type === 'plugin' ? 'Bundle' : 'Plugin';
+  const typeBadge = (type, extra = '') => (
+    <span className={`badge${extra}`} style={{ background: `var(--b-${type}-bg)`, color: `var(--b-${type}-fg)` }}>{t(`type.singular.${type}`)}</span>
+  );
+  const bundleLabel = inBundle ? t('card.bundleIn') : item.type === 'plugin' ? t('card.bundleAddPlugin') : t('card.bundleAddOther');
   const bundleAria = inBundle
-    ? `${pluginName} is in your bundle — remove`
-    : item.type === 'plugin' ? `Add ${pluginName} to bundle` : `Add plugin ${pluginName} to bundle`;
+    ? t('card.bundleRemoveAria', { plugin: pluginName })
+    : item.type === 'plugin' ? t('card.bundleAddAria', { plugin: pluginName }) : t('card.bundleAddParentAria', { plugin: pluginName });
   const counts = countsLine(item);
   const panelId = `${uid}-panel`;
 
@@ -77,8 +80,8 @@ export default function Card({ item, terms, components, inBundle, onToggleBundle
     >
       <div className="card-body">
         <div className="card-top">
-          <span className="badge" style={{ background: `var(--b-${item.type}-bg)`, color: `var(--b-${item.type}-fg)` }}>{LABEL[item.type]}</span>
-          {item.external && <span className="badge-outline">External</span>}
+          {typeBadge(item.type)}
+          {item.external && <span className="badge-outline">{t('card.external')}</span>}
           <span className="card-owner">{item.type === 'plugin' ? item.category || '' : item.plugin}</span>
         </div>
         <h3 id={`${uid}-title`} className="card-title"><Highlight text={item.title} terms={terms} /></h3>
@@ -86,10 +89,10 @@ export default function Card({ item, terms, components, inBundle, onToggleBundle
         {counts && <div className="card-counts">{counts}</div>}
         {item.description
           ? <p className={`card-desc${expanded ? '' : ' is-clamped'}`}><Highlight text={item.description} terms={terms} /></p>
-          : <p className="card-desc is-empty">No description provided.</p>}
+          : <p className="card-desc is-empty">{t('card.noDescription')}</p>}
         {tags.length > 0 && (
           <div className="card-tags">
-            {tags.map((t) => <span key={t}>#<Highlight text={t} terms={terms} /></span>)}
+            {tags.map((tag) => <span key={tag}>#<Highlight text={tag} terms={terms} /></span>)}
             {extraTags > 0 && <span>+{extraTags}</span>}
           </div>
         )}
@@ -97,31 +100,31 @@ export default function Card({ item, terms, components, inBundle, onToggleBundle
           {item.tokens > 0 && (
             <>
               <span className="tip-wrap">
-                <span>~{item.tokens} tokens always loaded</span>
+                <span>{t('card.tokens', { count: item.tokens })}</span>
                 <button
-                  type="button" className="info-btn" aria-label="About this estimate" aria-describedby={`${uid}-tip`}
+                  type="button" className="info-btn" aria-label={t('card.tokensInfo')} aria-describedby={`${uid}-tip`}
                   onMouseEnter={() => setTip(true)} onMouseLeave={() => setTip(false)} onFocus={() => setTip(true)} onBlur={() => setTip(false)}
                 ><InfoIcon size={14} /></button>
                 {tip && (
                   <span role="tooltip" id={`${uid}-tip`} className="tooltip">
-                    Estimate based on name and description length. Run <code>claude plugin details {pluginName}</code> for the exact figure.
+                    {rich('card.tip', { plugin: pluginName }, { code: (text) => <code>{text}</code> })}
                   </span>
                 )}
               </span>
               <span aria-hidden="true">·</span>
             </>
           )}
-          <span>Updated {relativeDate(item.updatedAt, now)}</span>
+          <span>{t('card.updated', { when: relativeDate(item.updatedAt, now) })}</span>
         </div>
         {expanded && (
           <div id={panelId} className="card-expanded">
             {components.length > 0 && (
               <div>
-                <div className="card-section-label">{item.type === 'plugin' ? 'Contents' : `Also in ${item.plugin}`}</div>
+                <div className="card-section-label">{item.type === 'plugin' ? t('card.contents') : t('card.alsoIn', { plugin: item.plugin })}</div>
                 <ul className="component-list">
                   {components.map((c, i) => (
                     <li key={`${c.type}:${c.title}:${i}`}>
-                      <span className="badge badge-sm" style={{ background: `var(--b-${c.type}-bg)`, color: `var(--b-${c.type}-fg)` }}>{LABEL[c.type]}</span>
+                      {typeBadge(c.type, ' badge-sm')}
                       <span className="mono">{c.title}</span>
                     </li>
                   ))}
@@ -129,26 +132,28 @@ export default function Card({ item, terms, components, inBundle, onToggleBundle
               </div>
             )}
             {item.external && (
-              <p className="card-external">Contents are in the source repository. <a href={item.sourceUrl} target="_blank" rel="noopener">Open source repository ↗</a></p>
+              <p className="card-external">
+                {rich('card.externalNote', {}, { a: (text) => <a href={item.sourceUrl} target="_blank" rel="noopener">{text}<ExtMark /></a> })}
+              </p>
             )}
             <dl className="card-facts">
-              <dt>Source</dt><dd>{item.external ? (item.sourceUrl || '').replace('https://', '') : item.type === 'plugin' ? `${item.path}/` : item.path}</dd>
-              <dt>Install</dt><dd>{item.install}</dd>
-              <dt>Updated</dt><dd>{item.updatedAt}</dd>
+              <dt>{t('card.factSource')}</dt><dd>{item.external ? (item.sourceUrl || '').replace('https://', '') : item.type === 'plugin' ? `${item.path}/` : item.path}</dd>
+              <dt>{t('card.factInstall')}</dt><dd>{item.install}</dd>
+              <dt>{t('card.factUpdated')}</dt><dd>{item.updatedAt}</dd>
             </dl>
           </div>
         )}
       </div>
       <div className="card-actions">
         {!fallback && (
-          <button type="button" className="btn" onClick={copy} aria-label={copied ? 'Copied install command' : `Copy install command: ${item.install}`} style={copied ? { color: 'var(--success)' } : undefined}>
-            {copied ? <><CheckIcon size={15} /><span>Copied</span></> : <><CopyIcon size={15} /><span>Copy install</span></>}
+          <button type="button" className="btn" onClick={copy} aria-label={copied ? t('card.copiedAria') : t('card.copyAria', { command: item.install })} style={copied ? { color: 'var(--success)' } : undefined}>
+            {copied ? <><CheckIcon size={15} /><span>{t('card.copied')}</span></> : <><CopyIcon size={15} /><span>{t('card.copy')}</span></>}
           </button>
         )}
         {fallback && (
           <input
             ref={fieldRef} className="copy-field" readOnly value={item.install}
-            aria-label="Install command — press Ctrl+C or ⌘C to copy"
+            aria-label={t('card.copyField')}
             onFocus={(e) => e.target.select()} onBlur={() => setFallback(false)}
           />
         )}
@@ -159,17 +164,17 @@ export default function Card({ item, terms, components, inBundle, onToggleBundle
           {inBundle ? <CheckIcon size={15} /> : <PlusIcon size={15} />}<span>{bundleLabel}</span>
         </button>
         <div className="card-actions-end">
-          <button type="button" className={`btn-icon${expanded ? ' is-on' : ''}`} aria-expanded={expanded} aria-controls={panelId} aria-label={expanded ? 'Show less' : 'Show details'} onClick={() => setExpanded((v) => !v)}>
+          <button type="button" className={`btn-icon${expanded ? ' is-on' : ''}`} aria-expanded={expanded} aria-controls={panelId} aria-label={expanded ? t('card.showLess') : t('card.showMore')} onClick={() => setExpanded((v) => !v)}>
             <ChevronIcon className={expanded ? 'flip' : ''} />
           </button>
-          <button type="button" className={`btn-icon${menu ? ' is-on' : ''}`} aria-haspopup="menu" aria-expanded={menu} aria-label="More actions" onClick={() => setMenu((v) => !v)}>
+          <button type="button" className={`btn-icon${menu ? ' is-on' : ''}`} aria-haspopup="menu" aria-expanded={menu} aria-label={t('card.moreActions')} onClick={() => setMenu((v) => !v)}>
             <DotsIcon />
           </button>
         </div>
         {menu && (
-          <div role="menu" aria-label="More actions" className="menu">
+          <div role="menu" aria-label={t('card.moreActions')} className="menu">
             {menuItems(item, pluginName).map((m) => (
-              <a key={m.label} role="menuitem" href={m.href} target="_blank" rel="noopener">
+              <a key={m.id} role="menuitem" href={m.href} target="_blank" rel="noopener">
                 <span>{m.label}</span><span aria-hidden="true" className="muted">↗</span>
               </a>
             ))}
@@ -179,4 +184,3 @@ export default function Card({ item, terms, components, inBundle, onToggleBundle
     </article>
   );
 }
-

@@ -1,20 +1,22 @@
 import { GH } from '../config.js';
+import { rich, t } from '../i18n/index.js';
 
 export default function Footer({ suggestHref, catalog }) {
   return (
     <footer className="site-footer">
       <div className="wrap footer-inner">
-        <nav aria-label="Footer">
-          <a href={suggestHref} target="_blank" rel="noopener">Suggest a plugin</a>
-          <a href="feed.xml">Atom feed</a>
-          <a href="catalog.json" className="mono small">catalog.json</a>
-          <a href="llms.txt" className="mono small">llms.txt</a>
-          <a href={GH} target="_blank" rel="noopener">Source on GitHub</a>
+        <nav aria-label={t('footer.label')}>
+          <a href={suggestHref} target="_blank" rel="noopener">{t('footer.suggest')}</a>
+          <a href="feed.xml">{t('footer.feed')}</a>
+          <a href="catalog.json" className="mono small">{t('footer.catalog')}</a>
+          <a href="llms.txt" className="mono small">{t('footer.llms')}</a>
+          <a href={GH} target="_blank" rel="noopener">{t('footer.source')}</a>
         </nav>
         {catalog && (
           <p className="build-info">
-            Catalog built {catalog.generatedAt.slice(0, 10)} · commit{' '}
-            <a href={`${GH}/commit/${catalog.commit}`} target="_blank" rel="noopener" className="mono">{catalog.commit}</a>
+            {rich('footer.built', { date: catalog.generatedAt.slice(0, 10), sha: catalog.commit }, {
+              a: (text) => <a href={`${GH}/commit/${catalog.commit}`} target="_blank" rel="noopener" className="mono">{text}</a>,
+            })}
           </p>
         )}
       </div>
