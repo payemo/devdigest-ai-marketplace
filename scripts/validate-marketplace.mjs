@@ -45,6 +45,24 @@ const KNOWN_SOURCE_TYPES = {
 // Component keys of plugin.json / entries whose values are paths relative to the plugin root.
 const PATH_COMPONENT_KEYS = ['skills', 'commands', 'agents', 'outputStyles', 'workflows'];
 
+// Versioned plugins (those that set "version" in plugin.json) are the publishable, project-neutral ones.
+// Their shipped files must not carry couplings to the project they were extracted from.
+// This marketplace's own name and repository name are legitimate (install commands name them) and are stripped
+// before matching.
+const SELF_REFERENCE_RE = /devdigest-(?:ai-)?marketplace/gi;
+const FORBIDDEN_STRINGS = [
+  { re: /dev-?digest/i, why: 'project name "DevDigest" (plugins must be project-neutral)' },
+  { re: /@devdigest\//i, why: 'DevDigest package scope' },
+  { re: /INSIGHTS\.md/, why: 'source-repository context file INSIGHTS.md (make it an input)' },
+  { re: /(?:^|[^\w-])routing\.md/, why: 'source-repository file routing.md (use an explicit routing table)' },
+  { re: /repo-rules\.md/, why: 'source-repository file repo-rules.md' },
+  { re: /\.claude\/(?:skills|agents)\//, why: 'hardcoded .claude/skills|agents path (use ${CLAUDE_SKILL_DIR} or the plugin namespace)' },
+  { re: /reviewer-core/, why: 'source-repository package reviewer-core' },
+  { re: /agent-runner/, why: 'source-repository package agent-runner' },
+];
+const TEXT_EXTENSIONS = new Set(['.md', '.json', '.yaml', '.yml', '.txt', '.mjs', '.js', '.ts', '.tsx', '.sh', '.py', '.toml', '.html', '.css']);
+const WRITE_TOOLS = ['Write', 'Edit', 'NotebookEdit'];
+
 class Report {
   constructor() { this.errors = []; this.warnings = []; }
   error(where, msg) { this.errors.push({ where, msg }); }
@@ -246,6 +264,163 @@ function lintPluginDir(entry, idx, pluginDir, rel, report) {
       }
     }
   }
+  return isObject(manifest) ? { name: entry.name, dir: pluginDir, rel, manifest } : undefined;
+}
+
+// ---- cross-plugin checks: dependencies, namespace use, release files, forbidden strings, read-only agents ----
+
+// A pragmatic node-semver range check: comparator sets joined by "||", comparators like ^1.2.3, ~1.2, >=1, 1.x, =1.0.0.
+const COMPARATOR_RE = /^(?:\^|~|>=|<=|>|<|=)?v?\d+(?:\.(?:\d+|x|\*)(?:\.(?:\d+|x|\*)(?:-[\w.]+)?)?)?$|^\*$/;
+export function isValidRange(range) {
+  if (typeof range !== 'string' || !range.trim()) return false;
+  return range.split('||').every((set) => {
+    const parts = set.trim().split(/\s+/).filter(Boolean);
+    return parts.length > 0 && parts.every((c) => COMPARATOR_RE.test(c));
+  });
+}
+
+function normalizeDependencies(manifest, where, report) {
+  if (manifest.dependencies === undefined) return [];
+  if (!Array.isArray(manifest.dependencies)) { report.error(where, '"dependencies" must be an array of "name" strings or { name, version?, marketplace? } objects'); return []; }
+  const out = [];
+  manifest.dependencies.forEach((d, i) => {
+    const w = `${where} dependencies[${i}]`;
+    if (typeof d === 'string') {
+      const [name, marketplace] = d.split('@');
+      if (!name) { report.error(w, `invalid dependency "${d}"`); return; }
+      out.push({ name, marketplace, w });
+    } else if (isObject(d)) {
+      if (typeof d.name !== 'string' || !d.name) { report.error(w, 'missing "name"'); return; }
+      if (d.version !== undefined && !isValidRange(d.version)) report.error(w, `"version" range "${d.version}" is not a valid semver range`);
+      out.push({ name: d.name, marketplace: d.marketplace, version: d.version, w });
+    } else {
+      report.error(w, 'must be a string or an object');
+    }
+  });
+  return out;
+}
+
+function isTextFile(file) { return TEXT_EXTENSIONS.has(path.extname(file).toLowerCase()); }
+
+// Minimal frontmatter reader that understands folded/literal blocks (`description: >`), which parseFrontmatter does not.
+function frontmatterFields(text) {
+  const m = text.replace(/^﻿/, '').match(/^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/);
+  if (!m) return undefined;
+  const fields = {};
+  const lines = m[1].split(/\r?\n/);
+  for (let i = 0; i < lines.length; i++) {
+    const kv = lines[i].match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+    if (!kv) continue;
+    let value = kv[2];
+    if (/^[>|][+-]?$/.test(value.trim())) {
+      value = '';
+      while (i + 1 < lines.length && /^\s+\S/.test(lines[i + 1] ?? '')) value += ' ' + lines[++i].trim();
+    }
+    fields[kv[1]] = value.replace(/^["']|["']$/g, '').trim();
+  }
+  return fields;
+}
+
+function lintAgents(plugin, report) {
+  const dir = path.join(plugin.dir, 'agents');
+  if (!isDir(dir)) return;
+  for (const f of fs.readdirSync(dir)) {
+    if (!f.endsWith('.md')) continue;
+    const where = `${plugin.rel}/agents/${f}`;
+    const fm = frontmatterFields(fs.readFileSync(path.join(dir, f), 'utf8'));
+    if (!fm) { report.error(where, 'missing YAML frontmatter'); continue; }
+    if (!fm.name) report.error(where, 'frontmatter is missing "name"');
+    else if (fm.name !== f.replace(/\.md$/, '')) report.error(where, `frontmatter name "${fm.name}" differs from file name "${f}"`);
+    if (!fm.description) report.error(where, 'frontmatter is missing "description"');
+    if (/read-only/i.test(fm.description ?? '') && fm.tools) {
+      const tools = fm.tools.split(',').map((t) => t.trim());
+      const bad = tools.filter((t) => WRITE_TOOLS.includes(t));
+      if (bad.length) report.error(where, `agent describes itself as read-only but lists write tool(s) in "tools": ${bad.join(', ')}`);
+    }
+  }
+}
+
+function lintVersionedFiles(plugin, report) {
+  const version = plugin.manifest.version;
+  if (version === undefined) return;
+  if (!isFile(path.join(plugin.dir, 'README.md'))) report.error(plugin.rel, 'versioned plugin has no README.md');
+  const changelog = path.join(plugin.dir, 'CHANGELOG.md');
+  if (!isFile(changelog)) { report.error(plugin.rel, 'versioned plugin has no CHANGELOG.md'); return; }
+  const re = new RegExp(`^## \\[${String(version).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\]`, 'm');
+  if (!re.test(fs.readFileSync(changelog, 'utf8'))) report.error(`${plugin.rel}/CHANGELOG.md`, `no "## [${version}]" entry for the version set in plugin.json`);
+}
+
+function scanShippedFiles(plugin, nsRe, declared, report) {
+  const forbidden = plugin.manifest.version !== undefined;
+  for (const file of walkFiles(plugin.dir)) {
+    const relFile = path.relative(plugin.dir, file).split(path.sep).join('/');
+    if (!isTextFile(file) || fs.statSync(file).size > 2_000_000) continue;
+    const where = `${plugin.rel}/${relFile}`;
+    const text = fs.readFileSync(file, 'utf8');
+
+    // namespace use (all plugins, including the manifest-free text of agents/skills/READMEs)
+    if (relFile !== '.claude-plugin/plugin.json' && nsRe) {
+      const seen = new Set();
+      for (const m of text.matchAll(nsRe)) {
+        const dep = m[1];
+        if (dep === plugin.name || declared.has(dep) || seen.has(dep)) continue;
+        seen.add(dep);
+        report.error(where, `references "${m[0]}" but "${dep}" is not in this plugin's dependencies (declare it in plugin.json)`);
+      }
+    }
+
+    // forbidden strings (versioned plugins only; the manifest's own author/owner fields are exempt)
+    if (forbidden && relFile !== '.claude-plugin/plugin.json') {
+      const cleaned = text.replace(SELF_REFERENCE_RE, '');
+      const lines = cleaned.split(/\r?\n/);
+      for (const { re, why } of FORBIDDEN_STRINGS) {
+        const i = lines.findIndex((l) => re.test(l));
+        if (i !== -1) report.error(`${where}:${i + 1}`, `forbidden string: ${why}`);
+      }
+    }
+  }
+}
+
+function lintCrossPlugin(plugins, mpName, report) {
+  const byName = new Map(plugins.map((p) => [p.name, p]));
+  const names = [...byName.keys()];
+  const nsRe = names.length
+    ? new RegExp(`(?<![\\w-])(${names.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')}):[a-z][\\w-]*`, 'g')
+    : null;
+
+  const graph = new Map();
+  for (const plugin of plugins) {
+    const mwhere = `${plugin.rel}/.claude-plugin/plugin.json`;
+    const deps = normalizeDependencies(plugin.manifest, mwhere, report);
+    const declared = new Set();
+    const edges = [];
+    for (const d of deps) {
+      const sameMarketplace = !d.marketplace || d.marketplace === mpName;
+      if (!sameMarketplace) continue; // cross-marketplace deps are governed by allowCrossMarketplaceDependenciesOn
+      if (!byName.has(d.name)) { report.error(d.w, `dependency "${d.name}" does not exist in this marketplace`); continue; }
+      if (d.name === plugin.name) { report.error(d.w, 'a plugin cannot depend on itself'); continue; }
+      declared.add(d.name);
+      edges.push(d.name);
+      const target = byName.get(d.name);
+      if (d.version && target.manifest.version === undefined) report.error(d.w, `"${d.name}" has no "version" in plugin.json, so the range "${d.version}" can never be satisfied`);
+    }
+    graph.set(plugin.name, edges);
+    scanShippedFiles(plugin, nsRe, declared, report);
+    lintVersionedFiles(plugin, report);
+    lintAgents(plugin, report);
+  }
+
+  // cycles
+  const state = new Map();
+  const stack = [];
+  const visit = (n) => {
+    if (state.get(n) === 'done') return;
+    if (state.get(n) === 'active') { report.error('dependencies', `dependency cycle: ${[...stack.slice(stack.indexOf(n)), n].join(' -> ')}`); return; }
+    state.set(n, 'active'); stack.push(n);
+    for (const m of graph.get(n) ?? []) visit(m);
+    stack.pop(); state.set(n, 'done');
+  };
+  for (const n of graph.keys()) visit(n);
 }
 
 export function lint(root) {
@@ -265,6 +440,7 @@ export function lint(root) {
 
   const names = new Set();
   const referencedDirs = new Set();
+  const loaded = [];
   mp.plugins.forEach((entry, idx) => {
     const where = `plugins[${idx}]`;
     if (!isObject(entry)) { report.error(where, 'entry must be an object'); return; }
@@ -297,8 +473,11 @@ export function lint(root) {
     if (path.relative(root, pluginDir).startsWith('..')) { report.error(ewhere, `source "${src}" escapes the marketplace root`); return; }
     if (!isDir(pluginDir)) { report.error(ewhere, `source directory "${src}" does not exist (validate passes this; install fails)`); return; }
     referencedDirs.add(pluginDir);
-    lintPluginDir(entry, idx, pluginDir, path.relative(root, pluginDir).split(path.sep).join('/'), report);
+    const info = lintPluginDir(entry, idx, pluginDir, path.relative(root, pluginDir).split(path.sep).join('/'), report);
+    if (info) loaded.push(info);
   });
+
+  lintCrossPlugin(loaded, mp.name, report);
 
   lintRenames(mp, names, report);
 

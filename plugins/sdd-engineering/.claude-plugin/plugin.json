@@ -1,0 +1,15 @@
+{
+  "name": "sdd-engineering",
+  "version": "1.0.0",
+  "description": "Spec Driven Development for Claude Code: spec → plan → implement → verify → retro, with agents, skills and bounded review loops",
+  "author": {
+    "name": "DevDigest"
+  },
+  "license": "MIT",
+  "keywords": ["sdd", "spec-driven-development", "planning", "implementation", "workflow", "agents"],
+  "dependencies": [
+    { "name": "engineering-paved-path", "version": "^1.0.0" },
+    { "name": "research-tools", "version": "^1.0.0" },
+    { "name": "architecture-review", "version": "^1.0.0" }
+  ]
+}

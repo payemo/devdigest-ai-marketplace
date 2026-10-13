@@ -123,3 +123,109 @@ test('external source without ref/sha is a warning, bad sha an error', () => {
   assert.match(msgs(lint(fixture(ext({ source: 'github', repo: 'o/r', sha: 'abc' })))), /40-char/);
   assert.deepEqual(lint(fixture(ext({ source: 'github', repo: 'o/r', ref: 'v1' }))).errors, []);
 });
+
+// ---- dependencies, namespaces, release files, forbidden strings, read-only agents ----
+
+const mp = (plugins) => ({
+  '.claude-plugin/marketplace.json': {
+    name: 'my-mp', description: 'd', owner: { name: 'o' },
+    plugins: plugins.map((n) => ({ name: n, source: `./plugins/${n}`, description: 'd' })),
+  },
+});
+const plugin = (name, extra = {}, files = {}) => ({
+  [`plugins/${name}/.claude-plugin/plugin.json`]: { name, version: '1.0.0', description: 'd', author: { name: 'a' }, ...extra },
+  [`plugins/${name}/README.md`]: `# ${name}\n`,
+  [`plugins/${name}/CHANGELOG.md`]: `# Changelog\n\n## [Unreleased]\n\n## [1.0.0] - 2026-01-01\n`,
+  [`plugins/${name}/skills/s/SKILL.md`]: SKILL,
+  ...Object.fromEntries(Object.entries(files).map(([k, v]) => [`plugins/${name}/${k}`, v])),
+});
+const dep = (name, version) => ({ dependencies: [version ? { name, version } : name] });
+
+test('dependency on an unknown plugin is an error', () => {
+  const r = lint(fixture({ ...mp(['a']), ...plugin('a', dep('ghost', '^1.0.0')) }));
+  assert.match(msgs(r), /dependency "ghost" does not exist/);
+});
+
+test('invalid dependency range is an error', () => {
+  const r = lint(fixture({ ...mp(['a', 'b']), ...plugin('a', dep('b', 'latest-ish')), ...plugin('b') }));
+  assert.match(msgs(r), /not a valid semver range/);
+});
+
+test('valid dependencies with ranges produce no findings', () => {
+  const r = lint(fixture({ ...mp(['a', 'b']), ...plugin('a', dep('b', '^1.0.0 || >=2.1')), ...plugin('b') }));
+  assert.deepEqual(r.errors, []);
+  assert.deepEqual(r.warnings, []);
+});
+
+test('dependency cycles are detected', () => {
+  const r = lint(fixture({ ...mp(['a', 'b']), ...plugin('a', dep('b', '^1.0.0')), ...plugin('b', dep('a', '^1.0.0')) }));
+  assert.match(msgs(r), /dependency cycle: a -> b -> a|dependency cycle: b -> a -> b/);
+});
+
+test('a version range on an unversioned dependency can never resolve', () => {
+  const files = { ...mp(['a', 'b']), ...plugin('a', dep('b', '^1.0.0')), ...plugin('b') };
+  const b = files['plugins/b/.claude-plugin/plugin.json'];
+  delete b.version;
+  assert.match(msgs(lint(fixture(files))), /no "version" in plugin\.json/);
+});
+
+test('using another plugin\'s namespace without declaring the dependency is an error', () => {
+  const files = { ...mp(['a', 'b']), ...plugin('a', {}, { 'agents/x.md': '---\nname: x\ndescription: d\nskills: b:s\n---\nUse b:s here.\n' }), ...plugin('b') };
+  assert.match(msgs(lint(fixture(files))), /references "b:s" but "b" is not in this plugin's dependencies/);
+});
+
+test('declaring the dependency satisfies the namespace check', () => {
+  const files = { ...mp(['a', 'b']), ...plugin('a', dep('b', '^1.0.0'), { 'agents/x.md': '---\nname: x\ndescription: d\n---\nUse b:s here.\n' }), ...plugin('b') };
+  assert.deepEqual(lint(fixture(files)).errors, []);
+});
+
+test('versioned plugin needs README and a CHANGELOG entry for its version', () => {
+  const files = { ...mp(['a']), ...plugin('a') };
+  files['plugins/a/CHANGELOG.md'] = '# Changelog\n\n## [0.9.0] - 2026-01-01\n';
+  delete files['plugins/a/README.md'];
+  const m = msgs(lint(fixture(files)));
+  assert.match(m, /no README\.md/);
+  assert.match(m, /no "## \[1\.0\.0\]" entry/);
+});
+
+test('unversioned plugins are exempt from release files and forbidden strings', () => {
+  const files = { ...mp(['a']), ...plugin('a', {}, { 'skills/s/SKILL.md': '---\nname: s\ndescription: d\n---\nDevDigest INSIGHTS.md\n' }) };
+  const m = files['plugins/a/.claude-plugin/plugin.json'];
+  delete m.version;
+  delete files['plugins/a/README.md'];
+  delete files['plugins/a/CHANGELOG.md'];
+  assert.deepEqual(lint(fixture(files)).errors, []);
+});
+
+test('forbidden project-specific strings in a versioned plugin are errors', () => {
+  const bad = ['DevDigest backend', 'see INSIGHTS.md', 'load .claude/skills/x/SKILL.md', '@devdigest/shared', 'reviewer-core', 'agent-runner', 'routing.md'];
+  for (const line of bad) {
+    const files = { ...mp(['a']), ...plugin('a', {}, { 'agents/x.md': `---\nname: x\ndescription: d\n---\n${line}\n` }) };
+    assert.match(msgs(lint(fixture(files))), /forbidden string/, line);
+  }
+});
+
+test('the marketplace\'s own name in install commands is allowed', () => {
+  const files = { ...mp(['a']), ...plugin('a', {}, { 'x.md': '/plugin install a@devdigest-marketplace\n/plugin marketplace add o/devdigest-ai-marketplace\n' }) };
+  assert.deepEqual(lint(fixture(files)).errors, []);
+});
+
+test('forbidden strings are found in non-skill files too (references, evals, agents)', () => {
+  const files = { ...mp(['a']), ...plugin('a', {}, { 'skills/s/references.md': 'ok', 'evals/c/prompt.md': 'uses dev-digest fixtures' }) };
+  const hit = lint(fixture(files)).errors.find((e) => /forbidden string/.test(e.msg));
+  assert.ok(hit, 'expected a forbidden-string error');
+  assert.match(hit.where, /plugins\/a\/evals\/c\/prompt\.md:1$/);
+});
+
+test('a read-only agent must not list write tools', () => {
+  const agent = (tools) => `---\nname: x\ndescription: >\n  A read-only reviewer\n  that never edits.\ntools: ${tools}\n---\nbody\n`;
+  const bad = lint(fixture({ ...mp(['a']), ...plugin('a', {}, { 'agents/x.md': agent('Read, Grep, Write') }) }));
+  assert.match(msgs(bad), /read-only but lists write tool\(s\) in "tools": Write/);
+  const ok = lint(fixture({ ...mp(['a']), ...plugin('a', {}, { 'agents/x.md': agent('Read, Grep, Bash') }) }));
+  assert.deepEqual(ok.errors, []);
+});
+
+test('agent frontmatter name must match the file name', () => {
+  const files = { ...mp(['a']), ...plugin('a', {}, { 'agents/x.md': '---\nname: y\ndescription: d\n---\nb\n' }) };
+  assert.match(msgs(lint(fixture(files))), /differs from file name/);
+});

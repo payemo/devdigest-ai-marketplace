@@ -1,0 +1,10 @@
+{
+  "name": "research-tools",
+  "version": "1.0.0",
+  "description": "A read-only researcher agent that answers one question about a codebase or an external library with citations",
+  "author": {
+    "name": "DevDigest"
+  },
+  "license": "MIT",
+  "keywords": ["research", "agent", "read-only", "citations"]
+}

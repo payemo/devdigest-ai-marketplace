@@ -15,6 +15,27 @@ Claude Code plugin marketplace.
 For a private repository, git credentials must already be stored on your machine
 (SSH key without passphrase, or `gh auth login && gh auth setup-git`).
 
+## Plugins
+
+| Plugin | What it is | Depends on |
+|---|---|---|
+| [`sdd-engineering`](plugins/sdd-engineering/README.md) | Spec Driven Development: spec → plan → implement → verify → retro (4 agents, `sdd` / `implement` / `workflow-retro` skills) | `engineering-paved-path`, `research-tools`, `architecture-review` |
+| [`engineering-paved-path`](plugins/engineering-paved-path/README.md) | Shared skills: React, Next.js, Fastify, onion architecture, React Testing Library, security | — |
+| [`research-tools`](plugins/research-tools/README.md) | Read-only `researcher` agent with cited reports | — |
+| [`architecture-review`](plugins/architecture-review/README.md) | Read-only `architecture-reviewer` agent for layering and dependency direction | `engineering-paved-path` |
+
+```
+sdd-engineering ──► engineering-paved-path
+                ├─► research-tools
+                └─► architecture-review ──► engineering-paved-path
+```
+
+Installing `sdd-engineering` installs the other three automatically:
+
+```
+/plugin install sdd-engineering@devdigest-marketplace
+```
+
 ## Layout
 
 ```
