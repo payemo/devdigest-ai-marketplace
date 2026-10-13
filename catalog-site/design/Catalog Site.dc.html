@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./vendor/react.production.min.js"></script>
+<script src="./vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>DevDigest Marketplace</title>
+<style>
+:root,[data-theme="light"]{--bg:oklch(0.985 0.002 260);--surface:#fff;--surface-2:oklch(0.965 0.003 260);--border:oklch(0.905 0.004 260);--border-strong:oklch(0.82 0.006 260);--text:oklch(0.22 0.012 260);--muted:oklch(0.47 0.012 260);--accent:oklch(0.5 0.15 262);--on-accent:#fff;--accent-soft:oklch(0.95 0.025 262);--focus:oklch(0.58 0.18 262);--hl:oklch(0.91 0.1 95);--success:oklch(0.5 0.12 150);--warning:oklch(0.55 0.12 70);--danger:oklch(0.52 0.17 25);--shadow:0 1px 2px oklch(0.2 0.01 260/0.06),0 6px 20px oklch(0.2 0.01 260/0.08);--scrim:oklch(0.2 0.01 260/0.35);--b-plugin-bg:oklch(0.95 0.035 300);--b-plugin-fg:oklch(0.42 0.12 300);--b-skill-bg:oklch(0.95 0.04 155);--b-skill-fg:oklch(0.4 0.09 155);--b-agent-bg:oklch(0.95 0.035 45);--b-agent-fg:oklch(0.45 0.11 45);--b-command-bg:oklch(0.95 0.03 235);--b-command-fg:oklch(0.42 0.1 235);--b-hook-bg:oklch(0.95 0.045 90);--b-hook-fg:oklch(0.43 0.08 90);--b-mcp-bg:oklch(0.95 0.035 350);--b-mcp-fg:oklch(0.45 0.12 350);--sans:system-ui,-apple-system,"Segoe UI",sans-serif;--mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;color-scheme:light}
+[data-theme="dark"]{--bg:oklch(0.17 0.006 260);--surface:oklch(0.205 0.007 260);--surface-2:oklch(0.245 0.008 260);--border:oklch(0.3 0.009 260);--border-strong:oklch(0.39 0.01 260);--text:oklch(0.94 0.005 260);--muted:oklch(0.72 0.01 260);--accent:oklch(0.76 0.12 262);--on-accent:oklch(0.17 0.02 262);--accent-soft:oklch(0.3 0.06 262);--focus:oklch(0.76 0.14 262);--hl:oklch(0.44 0.09 95);--success:oklch(0.76 0.13 150);--warning:oklch(0.8 0.12 75);--danger:oklch(0.72 0.15 25);--shadow:0 1px 2px oklch(0 0 0/0.3),0 8px 24px oklch(0 0 0/0.35);--scrim:oklch(0 0 0/0.55);--b-plugin-bg:oklch(0.3 0.05 300);--b-plugin-fg:oklch(0.86 0.08 300);--b-skill-bg:oklch(0.3 0.05 155);--b-skill-fg:oklch(0.86 0.08 155);--b-agent-bg:oklch(0.3 0.05 45);--b-agent-fg:oklch(0.86 0.08 45);--b-command-bg:oklch(0.3 0.05 235);--b-command-fg:oklch(0.86 0.08 235);--b-hook-bg:oklch(0.3 0.05 90);--b-hook-fg:oklch(0.86 0.08 90);--b-mcp-bg:oklch(0.3 0.05 350);--b-mcp-fg:oklch(0.86 0.08 350);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:oklch(0.88 0.004 260);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:2px}
+a:hover{color:var(--text)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+input::placeholder{color:var(--muted);opacity:1}
+input[type="search"]::-webkit-search-cancel-button{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<div ref="{{ outerRef }}" data-theme="{{ theme }}" style="position:relative;overflow:hidden;width:{{ frameW }};height:{{ frameH }};margin:{{ frameMargin }};border-radius:{{ frameRadius }};box-shadow:{{ frameShadow }};background:var(--bg);color:var(--text);font-family:var(--sans)">
+  <div ref="{{ scrollRef }}" style="height:100%;overflow:auto;display:flex;flex-direction:column">
+    <header style="position:sticky;top:0;z-index:20;flex:none;background:var(--bg);border-bottom:1px solid var(--border)">
+      <div style="max-width:1280px;margin:0 auto;height:60px;padding:0 {{ padX }}px;display:flex;align-items:center;gap:20px">
+        <a href="index.html" onClick="{{ goSearch }}" style="display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;min-width:0">
+          <span aria-hidden="true" style="flex:none;width:14px;height:14px;border-radius:3px;background:var(--accent)"></span>
+          <span style="font:600 15px/1 var(--sans);white-space:nowrap">DevDigest <span style="font-weight:400;color:var(--muted)">Marketplace</span></span>
+        </a>
+        <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+          <nav aria-label="Main" style="margin-left:auto;display:flex;align-items:center;gap:4px">
+            <a href="index.html" onClick="{{ goSearch }}" aria-current="{{ curSearch }}" style="height:36px;display:inline-flex;align-items:center;padding:0 12px;border-radius:7px;font-size:14px;text-decoration:none;color:var(--text);background:{{ navSearchBg }};font-weight:{{ navSearchW }}" style-hover="background:var(--surface-2)">Search</a>
+            <a href="changelog.html" onClick="{{ goChangelog }}" aria-current="{{ curChange }}" style="height:36px;display:inline-flex;align-items:center;padding:0 12px;border-radius:7px;font-size:14px;text-decoration:none;color:var(--text);background:{{ navChangeBg }};font-weight:{{ navChangeW }}" style-hover="background:var(--surface-2)">What's new</a>
+            <a href="{{ gh }}" target="_blank" rel="noopener" style="height:36px;display:inline-flex;align-items:center;gap:4px;padding:0 12px;border-radius:7px;font-size:14px;text-decoration:none;color:var(--text)" style-hover="background:var(--surface-2)">GitHub <span aria-hidden="true" style="color:var(--muted)">↗</span></a>
+          </nav>
+        </sc-if>
+        <div style="display:flex;align-items:center;gap:4px;margin-left:{{ toolsMargin }}">
+          <button type="button" onClick="{{ toggleTheme }}" aria-label="{{ themeLabel }}" title="{{ themeLabel }}" style="width:{{ iconBtn }}px;height:{{ iconBtn }}px;display:grid;place-items:center;padding:0;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer" style-hover="border-color:var(--border-strong)">
+            <sc-if value="{{ isDark }}"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2.5" x2="12" y2="4.5"></line><line x1="12" y1="19.5" x2="12" y2="21.5"></line><line x1="2.5" y1="12" x2="4.5" y2="12"></line><line x1="19.5" y1="12" x2="21.5" y2="12"></line><line x1="5.3" y1="5.3" x2="6.7" y2="6.7"></line><line x1="17.3" y1="17.3" x2="18.7" y2="18.7"></line><line x1="5.3" y1="18.7" x2="6.7" y2="17.3"></line><line x1="17.3" y1="6.7" x2="18.7" y2="5.3"></line></svg></sc-if>
+            <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg></sc-if>
+          </button>
+          <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+            <button type="button" onClick="{{ toggleMenu }}" aria-expanded="{{ menuStr }}" aria-controls="mobile-menu" aria-label="Menu" style="width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+            </button>
+          </sc-if>
+        </div>
+      </div>
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+        <nav id="mobile-menu" aria-label="Main" style="display:flex;flex-direction:column;padding:8px {{ padX }}px 12px;border-top:1px solid var(--border);background:var(--bg)">
+          <a href="index.html" onClick="{{ goSearch }}" aria-current="{{ curSearch }}" style="min-height:48px;display:flex;align-items:center;font-size:16px;color:var(--text);text-decoration:none;font-weight:{{ navSearchW }}">Search</a>
+          <a href="changelog.html" onClick="{{ goChangelog }}" aria-current="{{ curChange }}" style="min-height:48px;display:flex;align-items:center;font-size:16px;color:var(--text);text-decoration:none;font-weight:{{ navChangeW }}">What's new</a>
+          <a href="{{ gh }}" target="_blank" rel="noopener" style="min-height:48px;display:flex;align-items:center;font-size:16px;color:var(--text);text-decoration:none">GitHub ↗</a>
+          <a href="{{ suggestHref }}" target="_blank" rel="noopener" style="min-height:48px;display:flex;align-items:center;font-size:16px;color:var(--text);text-decoration:none">Suggest a plugin ↗</a>
+        </nav>
+      </sc-if>
+    </header>
+
+    <main style="flex:1 0 auto">
+      <sc-if value="{{ onSearch }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:1280px;margin:0 auto;padding:{{ heroPad }} {{ padX }}px 0;display:flex;flex-direction:column;align-items:center;gap:16px;transition:padding 150ms ease">
+          <sc-if value="{{ showHero }}" hint-placeholder-val="{{ true }}">
+            <h1 style="margin:0;max-width:720px;text-align:center;font:600 {{ h1Size }}px/1.2 var(--sans);letter-spacing:-0.015em;color:var(--text);text-wrap:balance">Find skills, agents and plugins for Claude Code</h1>
+          </sc-if>
+          <div role="search" style="width:100%;max-width:{{ searchMax }}px">
+            <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search the catalog</label>
+            <div style="display:flex;align-items:center;gap:10px;height:{{ searchH }}px;padding:0 8px 0 16px;border-radius:12px;border:1px solid {{ searchBorder }};background:var(--surface);box-shadow:{{ searchRing }};transition:border-color 120ms ease,box-shadow 120ms ease">
+              <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" style="flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round"><circle cx="11" cy="11" r="6.5"></circle><line x1="16" y1="16" x2="20.5" y2="20.5"></line></svg>
+              <input id="q" ref="{{ inputRef }}" type="search" autocomplete="off" spellcheck="false" value="{{ input }}" onChange="{{ onInput }}" onKeyDown="{{ onInputKey }}" onFocus="{{ onFocus }}" onBlur="{{ onBlur }}" placeholder="Describe what you need, e.g. “review pull requests”" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;color:var(--text);font:400 16px/1 var(--sans)">
+              <sc-if value="{{ hasInput }}" hint-placeholder-val="{{ false }}">
+                <button type="button" onClick="{{ clearQuery }}" aria-label="Clear search" style="flex:none;width:36px;height:36px;display:grid;place-items:center;padding:0;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer" style-hover="background:var(--surface-2);color:var(--text)">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+                </button>
+              </sc-if>
+              <sc-if value="{{ showKbd }}" hint-placeholder-val="{{ true }}">
+                <kbd aria-hidden="true" style="flex:none;margin-right:6px;min-width:24px;height:24px;display:grid;place-items:center;border-radius:6px;border:1px solid var(--border-strong);border-bottom-width:2px;color:var(--muted);font:500 12px/1 var(--mono)">/</kbd>
+              </sc-if>
+            </div>
+          </div>
+          <sc-if value="{{ showHero }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 8px;font-size:13.5px;color:var(--muted)">
+              <span>Try:</span>
+              <sc-for list="{{ examples }}" as="ex" hint-placeholder-count="4">
+                <button type="button" onClick="{{ ex.pick }}" style="min-height:{{ chipH }}px;padding:0 10px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text);font:400 13.5px/1 var(--sans);cursor:pointer" style-hover="border-color:var(--border-strong);background:var(--surface)">{{ ex.label }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="max-width:1280px;margin:0 auto;padding:{{ filterTop }}px {{ padX }}px 16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0">
+            <span id="type-label" style="flex:none;font-size:13px;color:var(--muted)">Type</span>
+            <div role="radiogroup" aria-labelledby="type-label" style="display:flex;gap:6px;overflow-x:auto;padding:2px;margin:-2px;min-width:0;scrollbar-width:none">
+              <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="7">
+                <button type="button" role="radio" aria-checked="{{ c.checked }}" disabled="{{ c.disabled }}" onClick="{{ c.pick }}" style="flex:none;min-height:{{ chipH }}px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:var(--text);font:{{ c.weight }} 13px/1 var(--sans);cursor:{{ c.cursor }};opacity:{{ c.opacity }};white-space:nowrap" style-hover="border-color:var(--border-strong)">
+                  <span>{{ c.label }}</span><span style="font:12px/1 var(--mono);color:var(--muted)">{{ c.count }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px">
+            <sc-if value="{{ hasCategories }}" hint-placeholder-val="{{ true }}">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)">Category
+                <select value="{{ cat }}" onChange="{{ onCat }}" style="height:{{ selH }}px;padding:0 28px 0 10px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font:400 13px/1 var(--sans)">
+                  <option value="">any</option>
+                  <sc-for list="{{ categories }}" as="o"><option value="{{ o }}">{{ o }}</option></sc-for>
+                </select>
+              </label>
+            </sc-if>
+            <sc-if value="{{ hasFilters }}" hint-placeholder-val="{{ false }}">
+              <button type="button" onClick="{{ resetFilters }}" style="height:{{ selH }}px;padding:0 6px;border:0;background:transparent;color:var(--accent);font:500 13px/1 var(--sans);cursor:pointer;text-decoration:underline;text-underline-offset:2px">Reset filters</button>
+            </sc-if>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:14px">
+              <p aria-live="polite" style="margin:0;font-size:13px;color:var(--muted)">{{ countLine }}</p>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)">Sort
+                <select value="{{ sortEff }}" onChange="{{ onSort }}" style="height:{{ selH }}px;padding:0 28px 0 10px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font:400 13px/1 var(--sans)">
+                  <option value="best" disabled="{{ bestDisabled }}">Best match</option>
+                  <option value="name">Name A–Z</option>
+                  <option value="updated">Recently updated</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div style="max-width:1280px;margin:0 auto;padding:4px {{ padX }}px 56px;display:flex;align-items:flex-start;gap:24px">
+          <div role="region" aria-label="Search results" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:32px">
+            <sc-if value="{{ stLoading }}" hint-placeholder-val="{{ false }}">
+              <div aria-busy="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(284px,100%),1fr));gap:16px">
+                <sc-for list="{{ skeletons }}" as="k" hint-placeholder-count="6">
+                  <div style="height:236px;border-radius:10px;border:1px solid var(--border);background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:12px">
+                    <div style="width:56px;height:18px;border-radius:4px;background:var(--surface-2)"></div>
+                    <div style="width:60%;height:16px;border-radius:4px;background:var(--surface-2)"></div>
+                    <div style="width:100%;height:12px;border-radius:4px;background:var(--surface-2)"></div>
+                    <div style="width:85%;height:12px;border-radius:4px;background:var(--surface-2)"></div>
+                    <div style="margin-top:auto;width:100%;height:34px;border-radius:7px;background:var(--surface-2)"></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ stError }}" hint-placeholder-val="{{ false }}">
+              <div role="alert" style="max-width:520px;margin:32px auto;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+                <div aria-hidden="true" style="width:40px;height:40px;border-radius:20px;display:grid;place-items:center;border:1.5px solid var(--danger);color:var(--danger);font:700 18px/1 var(--sans)">!</div>
+                <h2 style="margin:0;font:600 18px/1.3 var(--sans)">Couldn't load the catalog.</h2>
+                <p style="margin:0;font-size:14px;line-height:1.5;color:var(--muted)">Check your connection and try again, or browse the plugins directly on GitHub.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+                  <button type="button" onClick="{{ retry }}" style="height:40px;padding:0 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);font:600 14px/1 var(--sans);cursor:pointer">Retry</button>
+                  <a href="{{ gh }}" target="_blank" rel="noopener" style="height:40px;display:inline-flex;align-items:center;padding:0 16px;border-radius:8px;border:1px solid var(--border-strong);color:var(--text);text-decoration:none;font:500 14px/1 var(--sans)">Open repository ↗</a>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ stEmptyCatalog }}" hint-placeholder-val="{{ false }}">
+              <div style="max-width:520px;margin:32px auto;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+                <h2 style="margin:0;font:600 18px/1.3 var(--sans)">This marketplace has no plugins yet.</h2>
+                <p style="margin:0;font-size:14px;line-height:1.5;color:var(--muted)">Plugins appear here once they are added to <code style="font-family:var(--mono);color:var(--text)">marketplace.json</code>.</p>
+                <a href="{{ suggestHref }}" target="_blank" rel="noopener" style="font-size:14px">Suggest a plugin ↗</a>
+              </div>
+            </sc-if>
+            <sc-if value="{{ stNoResults }}" hint-placeholder-val="{{ false }}">
+              <div style="max-width:560px;margin:24px auto;display:flex;flex-direction:column;gap:16px">
+                <h2 style="margin:0;font:600 18px/1.35 var(--sans);overflow-wrap:anywhere">No matches for “{{ query }}”.</h2>
+                <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5;color:var(--text)">
+                  <sc-if value="{{ hasFilters }}"><li><button type="button" onClick="{{ resetFilters }}" style="padding:0;border:0;background:transparent;color:var(--accent);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Remove filters</button> — you're filtering by {{ filterDesc }}.</li></sc-if>
+                  <li>Try fewer or more general words.</li>
+                  <li style="display:flex;flex-wrap:wrap;align-items:center;gap:6px">Popular searches:
+                    <sc-for list="{{ examples }}" as="ex"><button type="button" onClick="{{ ex.pick }}" style="min-height:{{ chipH }}px;padding:0 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:400 13px/1 var(--sans);cursor:pointer" style-hover="border-color:var(--border-strong)">{{ ex.label }}</button></sc-for>
+                  </li>
+                </ul>
+                <a href="{{ suggestHref }}" target="_blank" rel="noopener" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);text-decoration:none;font:500 14px/1 var(--sans)">Suggest a plugin for this <span aria-hidden="true" style="color:var(--muted)">↗</span></a>
+              </div>
+            </sc-if>
+            <sc-if value="{{ stGrouped }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+                <section aria-labelledby="{{ g.hid }}" style="display:flex;flex-direction:column;gap:12px">
+                  <h2 id="{{ g.hid }}" style="margin:0;display:flex;align-items:baseline;gap:8px;font:600 14px/1.2 var(--sans);color:var(--text)">{{ g.label }} <span style="font:400 12px/1 var(--mono);color:var(--muted)">{{ g.count }}</span></h2>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min({{ cardMin }}px,100%),1fr));gap:16px">
+                    <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                      <dc-import name="Catalog Card" item="{{ it.a }}" terms="{{ it.terms }}" components="{{ it.components }}" in-bundle="{{ it.inBundle }}" on-toggle-bundle="{{ it.toggle }}" on-toast="{{ it.toast }}" touch="{{ it.touch }}" hint-size="100%,236px" style="min-width:0"></dc-import>
+                    </sc-for>
+                  </div>
+                </section>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ stFlat }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min({{ cardMin }}px,100%),1fr));gap:16px">
+                <sc-for list="{{ flat }}" as="it" hint-placeholder-count="6">
+                  <dc-import name="Catalog Card" item="{{ it.a }}" terms="{{ it.terms }}" components="{{ it.components }}" in-bundle="{{ it.inBundle }}" on-toggle-bundle="{{ it.toggle }}" on-toast="{{ it.toast }}" touch="{{ it.touch }}" hint-size="100%,236px" style="min-width:0"></dc-import>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ showAside }}" hint-placeholder-val="{{ true }}">
+            <aside aria-label="Bundle" style="position:sticky;top:76px;flex:none;width:{{ asideW }}px">
+              <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+                <dc-import name="Bundle Panel" plugins="{{ bundleRows }}" on-remove="{{ removeFromBundle }}" on-clear="{{ clearBundle }}" on-close="{{ closePanel }}" on-share="{{ shareBundle }}" on-toast="{{ showToast }}" variant="panel" hint-size="340px,180px"></dc-import>
+              </sc-if>
+              <sc-if value="{{ panelClosed }}" hint-placeholder-val="{{ true }}">
+                <button type="button" onClick="{{ openPanel }}" aria-label="{{ bundleTabAria }}" aria-expanded="false" style="width:44px;min-height:148px;padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer" style-hover="border-color:var(--border-strong);box-shadow:var(--shadow)">
+                  <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span style="writing-mode:vertical-rl;font:500 13px/1 var(--sans);letter-spacing:0.02em">Bundle ({{ bundleCount }})</span>
+                </button>
+              </sc-if>
+            </aside>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ onChangelog }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:880px;margin:0 auto;padding:40px {{ padX }}px 64px;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px 20px">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <h1 style="margin:0;font:600 28px/1.2 var(--sans);letter-spacing:-0.015em">What's new</h1>
+              <p style="margin:0;font-size:14px;color:var(--muted)">Recent changes to plugins in this marketplace, from git history.</p>
+            </div>
+            <a href="feed.xml" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);text-decoration:none;font:500 13px/1 var(--sans)">Atom feed <span aria-hidden="true" style="color:var(--muted)">↗</span></a>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)">Filter
+            <select value="{{ clPlugin }}" onChange="{{ onClPlugin }}" style="height:{{ selH }}px;padding:0 28px 0 10px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font:400 13px/1 var(--sans);max-width:100%">
+              <option value="">All plugins</option>
+              <option value="(marketplace)">marketplace</option>
+              <sc-for list="{{ pluginNames }}" as="o"><option value="{{ o }}">{{ o }}</option></sc-for>
+            </select>
+          </label>
+          <sc-for list="{{ days }}" as="d" hint-placeholder-count="3">
+            <section aria-labelledby="{{ d.hid }}" style="display:flex;flex-direction:column">
+              <h2 id="{{ d.hid }}" style="margin:0 0 4px;display:flex;align-items:baseline;gap:10px;font:600 13px/1.2 var(--mono);color:var(--text)">{{ d.date }} <span style="font:400 12.5px/1 var(--sans);color:var(--muted)">{{ d.weekday }}</span></h2>
+              <ul style="list-style:none;margin:0;padding:0">
+                <sc-for list="{{ d.rows }}" as="r" hint-placeholder-count="2">
+                  <li style="display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px;padding:10px 0;border-bottom:1px solid var(--border)">
+                    <span style="flex:none;width:{{ clNameW }};display:inline-flex;align-items:baseline;gap:8px;min-width:0">
+                      <span aria-hidden="true" style="flex:none;width:8px;height:8px;border-radius:4px;background:{{ r.dot }};transform:translateY(-1px)"></span>
+                      <button type="button" onClick="{{ r.filter }}" title="{{ r.filterTitle }}" style="padding:0;border:0;background:transparent;font:500 13px/1.35 var(--mono);color:var(--text);cursor:pointer;text-align:left;overflow-wrap:anywhere;min-width:0" style-hover="color:var(--accent)">{{ r.plugin }}</button>
+                    </span>
+                    <span style="flex:1 1 240px;min-width:0;font-size:14px;line-height:1.45;color:var(--text);overflow-wrap:anywhere">{{ r.subject }}</span>
+                    <a href="{{ r.href }}" target="_blank" rel="noopener" aria-label="{{ r.shaAria }}" style="flex:none;font:12.5px/1.35 var(--mono);color:var(--accent);text-decoration:none" style-hover="text-decoration:underline">{{ r.sha }} ↗</a>
+                  </li>
+                </sc-for>
+              </ul>
+            </section>
+          </sc-for>
+          <p style="margin:0;font-size:13px;color:var(--muted)">Showing the last 100 commits that touch plugins or the marketplace.</p>
+        </div>
+      </sc-if>
+    </main>
+
+    <footer style="flex:none;border-top:1px solid var(--border);padding-bottom:{{ footerPad }}px">
+      <div style="max-width:1280px;margin:0 auto;padding:24px {{ padX }}px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;font-size:13px">
+        <nav aria-label="Footer" style="display:flex;flex-wrap:wrap;gap:4px 18px">
+          <a href="{{ suggestHref }}" target="_blank" rel="noopener" style="color:var(--text);min-height:{{ footLinkH }}px;display:inline-flex;align-items:center">Suggest a plugin</a>
+          <a href="feed.xml" style="color:var(--text);min-height:{{ footLinkH }}px;display:inline-flex;align-items:center">Atom feed</a>
+          <a href="catalog.json" style="color:var(--text);min-height:{{ footLinkH }}px;display:inline-flex;align-items:center;font-family:var(--mono);font-size:12.5px">catalog.json</a>
+          <a href="llms.txt" style="color:var(--text);min-height:{{ footLinkH }}px;display:inline-flex;align-items:center;font-family:var(--mono);font-size:12.5px">llms.txt</a>
+          <a href="{{ gh }}" target="_blank" rel="noopener" style="color:var(--text);min-height:{{ footLinkH }}px;display:inline-flex;align-items:center">Source on GitHub</a>
+        </nav>
+        <p style="margin:0 0 0 auto;color:var(--muted);font-size:12.5px">Catalog built 2026-10-13 · commit <a href="{{ commitHref }}" target="_blank" rel="noopener" style="font-family:var(--mono)">a1b2c3d</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <sc-if value="{{ showFab }}" hint-placeholder-val="{{ false }}">
+    <button type="button" onClick="{{ openSheet }}" aria-haspopup="dialog" aria-label="{{ bundleTabAria }}" style="position:absolute;z-index:30;right:16px;bottom:16px;height:48px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;border-radius:24px;border:1px solid {{ fabBorder }};background:{{ fabBg }};color:{{ fabFg }};font:600 14px/1 var(--sans);box-shadow:var(--shadow);cursor:pointer">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Bundle ({{ bundleCount }})</span>
+    </button>
+  </sc-if>
+  <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;justify-content:flex-end">
+      <button type="button" aria-label="Close bundle" onClick="{{ closeSheet }}" style="position:absolute;inset:0;border:0;padding:0;background:var(--scrim);cursor:default"></button>
+      <div role="dialog" aria-modal="true" aria-label="Your bundle" style="position:relative;max-height:88%;overflow:auto;border-radius:16px 16px 0 0;background:var(--surface);box-shadow:var(--shadow);padding-top:8px">
+        <div aria-hidden="true" style="width:40px;height:4px;margin:0 auto;border-radius:2px;background:var(--border-strong)"></div>
+        <dc-import name="Bundle Panel" plugins="{{ bundleRows }}" on-remove="{{ removeFromBundle }}" on-clear="{{ clearBundle }}" on-close="{{ closeSheet }}" on-share="{{ shareBundle }}" on-toast="{{ showToast }}" variant="sheet" touch="{{ true }}" hint-size="100%,240px"></dc-import>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position:absolute;z-index:50;left:50%;bottom:{{ toastBottom }}px;transform:translateX(-50%);max-width:calc(100% - 32px);padding:10px 16px;border-radius:8px;background:var(--text);color:var(--bg);font-size:13.5px;line-height:1.4;box-shadow:var(--shadow)">{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;frame&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Fluid&quot;,&quot;Tablet 768&quot;,&quot;Mobile 390&quot;],&quot;default&quot;:&quot;Fluid&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;simulate&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Live&quot;,&quot;Loading&quot;,&quot;Load error&quot;,&quot;Empty catalog&quot;],&quot;default&quot;:&quot;Live&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;standaloneHooksMcp&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Open items&quot;}}">
+const MKT = 'devdigest-marketplace', REPO = 'payemo/devdigest-ai-marketplace', GH = 'https://github.com/' + REPO;
+const TYPES = ['plugin', 'skill', 'agent', 'command', 'hook', 'mcp'];
+const PLURAL = { plugin: 'Plugins', skill: 'Skills', agent: 'Agents', command: 'Commands', hook: 'Hooks', mcp: 'MCP' };
+const P = [
+  { name: 'hello-devdigest', description: 'Sample plugin that greets the user and confirms the marketplace is installed correctly.', tags: ['sample', 'demo'], category: null, updatedAt: '2026-10-12', c: [
+    ['skill', 'hello', 'Greets the user and confirms that the DevDigest marketplace plugin is installed and loading skills correctly.', '2026-10-12'],
+    ['command', 'hello', 'Print a greeting and the installed plugin version.', '2026-10-12'],
+    ['hook', 'SessionStart', 'startup', '2026-10-05']] },
+  { name: 'code-review', description: 'Structured pull-request review: correctness, readability, test coverage and risk, with inline suggestions.', tags: ['review', 'pull-requests', 'quality'], category: 'quality', updatedAt: '2026-10-09', c: [
+    ['skill', 'review-pr', 'Reviews a pull request diff and produces a prioritized list of findings with suggested fixes.', '2026-10-09'],
+    ['skill', 'review-checklist', "Applies your team's review checklist to staged changes before you open a pull request.", '2026-09-30'],
+    ['agent', 'code-reviewer', 'Senior reviewer subagent that audits diffs for bugs, unhandled edge cases and unclear naming.', '2026-10-09'],
+    ['command', 'review', 'Review the current branch against main and summarize the risk.', '2026-09-30'],
+    ['hook', 'PreToolUse', 'Bash', '2026-09-30']] },
+  { name: 'commit-craft', description: 'Writes conventional commit messages and changelog entries from staged changes.', tags: ['git', 'commits', 'changelog'], category: 'workflow', updatedAt: '2026-10-05', c: [
+    ['skill', 'commit-message', 'Drafts a Conventional Commits message from the staged diff, with scope and a breaking-change footer when needed.', '2026-10-05'],
+    ['command', 'commit', 'Stage, describe and commit in one step.', '2026-09-22'],
+    ['command', 'changelog', 'Append unreleased changes to CHANGELOG.md, grouped by type.', '2026-09-22']] },
+  { name: 'test-pilot', description: 'Generates and repairs unit tests, and explains failing test output in plain language.', tags: ['testing', 'jest', 'pytest'], category: 'quality', updatedAt: '2026-09-28', c: [
+    ['skill', 'write-tests', "Writes focused unit tests for the selected function, matching the project's existing test framework.", '2026-09-28'],
+    ['skill', 'fix-failing-test', 'Reads a failing test run, finds the cause and proposes the smallest fix.', '2026-09-28'],
+    ['agent', 'test-runner', 'Runs the test suite in the background and reports only new failures.', '2026-09-15'],
+    ['hook', 'PostToolUse', 'Edit|Write', '2026-09-28']] },
+  { name: 'docs-writer', description: 'Drafts READMEs, API references and architecture decision records from your source code.', tags: ['docs', 'readme', 'adr'], category: 'docs', updatedAt: '2026-10-01', c: [
+    ['skill', 'readme', 'Generates or updates a README with install, usage and configuration sections.', '2026-09-26'],
+    ['skill', 'adr', 'Writes an architecture decision record from a short description of the decision.', '2026-09-26'],
+    ['agent', 'docs-editor', 'Edits documentation for clarity, consistent terminology and broken links.', '2026-09-26'],
+    ['command', 'docs', 'Generate an API reference for the current module.', '2026-09-26'],
+    ['mcp', 'docs-search', 'npx -y @devdigest/docs-search-mcp', '2026-10-01']] },
+  { name: 'security-sentinel', description: 'Scans changes for secrets, risky dependencies and injection patterns before they are committed.', tags: ['security', 'secrets', 'dependencies'], category: 'security', updatedAt: '2026-09-18', c: [
+    ['skill', 'secret-scan', 'Finds API keys, tokens and private keys in staged files and explains how to rotate them.', '2026-09-18'],
+    ['agent', 'threat-modeler', 'Walks through a feature design and lists likely threats with mitigations.', '2026-09-10'],
+    ['hook', 'PreToolUse', 'Write', '2026-09-18'],
+    ['mcp', 'osv', 'npx -y osv-mcp-server', '2026-09-10']] },
+  { name: 'pr-assistant', description: 'Opens, updates and summarizes GitHub pull requests from the terminal.', tags: ['github', 'pull-requests'], category: 'workflow', updatedAt: '2026-09-20', external: true, sourceUrl: 'https://github.com/devdigest/pr-assistant', c: [] },
+  { name: 'internationalization-and-localization-string-extractor', description: '', tags: ['i18n', 'l10n', 'strings', 'translation'], category: 'docs', updatedAt: '2026-08-30', c: [
+    ['skill', 'extract-strings', '', '2026-08-30'],
+    ['command', 'sync-locales', 'Sync locale files with the source language and flag missing keys.', '2026-08-30']] },
+];
+const CHANGES = [
+  ['2026-10-12', 'a1b2c3d', 'Add greeting skill', ['hello-devdigest']],
+  ['2026-10-12', 'e4f5a6b', 'Add catalog site spec', []],
+  ['2026-10-09', '7c81d02', 'Review agent: flag unhandled promise rejections', ['code-review']],
+  ['2026-10-09', '3fe90aa', 'Bump plugin versions for release 0.4.0', ['code-review', 'test-pilot', 'docs-writer']],
+  ['2026-10-05', 'b52c1e9', 'Commit skill: support breaking-change footers', ['commit-craft']],
+  ['2026-10-05', '0d4e7f3', 'Add SessionStart hook to sample plugin', ['hello-devdigest']],
+  ['2026-10-01', '91aa4c6', 'docs-writer: add docs-search MCP server', ['docs-writer']],
+  ['2026-09-28', 'c3d7e12', 'test-pilot: run tests after edits', ['test-pilot']],
+  ['2026-09-24', '5e6f8a0', 'Lint: require description in SKILL.md frontmatter', []],
+  ['2026-09-20', 'f12b9d4', 'Add pr-assistant (external source)', ['pr-assistant']],
+  ['2026-09-18', '8a03c5b', 'security-sentinel: scan staged files only', ['security-sentinel']],
+  ['2026-08-30', '6b7d2e1', 'Add i18n string extractor', ['internationalization-and-localization-string-extractor']],
+];
+const STOP = new Set('i,need,a,an,the,for,to,of,that,which,with,my,me,want,looking,something,some,is,are,can,and,or,in,on,it,this,please,would,like,any,how,what,will,we,our,you'.split(','));
+const TYPEW = { skill: 'skill', skills: 'skill', agent: 'agent', agents: 'agent', subagent: 'agent', subagents: 'agent', plugin: 'plugin', plugins: 'plugin', command: 'command', commands: 'command', hook: 'hook', hooks: 'hook', mcp: 'mcp' };
+const stem = w => { w = w.toLowerCase(); if (w.length > 5 && w.endsWith('ing')) return w.slice(0, -3); if (w.length > 4 && w.endsWith('ed')) return w.slice(0, -2); if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1); return w; };
+const SYN = [['review', 'audit', 'critique', 'check'], ['greet', 'hello', 'welcome'], ['test', 'spec', 'unit'], ['doc', 'documentation', 'readme'], ['commit', 'changelog'], ['security', 'secret', 'vulnerability', 'secure'], ['pr', 'pull'], ['i18n', 'translation', 'locale', 'l10n']].map(g => g.map(stem));
+const tok = s => (s || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(r => ({ r, s: stem(r) }));
+function ed1(a, b) { if (a === b) return true; const la = a.length, lb = b.length; if (Math.abs(la - lb) > 1) return false; let i = 0, j = 0, d = 0; while (i < la && j < lb) { if (a[i] === b[j]) { i++; j++; continue; } if (++d > 1) return false; if (la > lb) i++; else if (lb > la) j++; else { i++; j++; } } return d + (la - i) + (lb - j) <= 1; }
+function mq(toks, q) { let b = 0; for (const t of toks) { if (t.s === q || t.r === q) return 1; if (q.length >= 3 && t.r.startsWith(q)) b = Math.max(b, 0.7); else if (q.length >= 4 && t.s.length >= 4 && ed1(t.s, q)) b = Math.max(b, 0.45); } return b; }
+function hue(name) { let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360; return h; }
+
+function build() {
+  const arts = [], comps = {};
+  for (const p of P) {
+    const list = []; let tokens = 0; const counts = {};
+    for (const [type, name, d, upd] of p.c) {
+      let a;
+      const base = { type, plugin: p.name, tags: p.tags, category: p.category, updatedAt: upd, external: false, install: `/plugin install ${p.name}@${MKT}` };
+      if (type === 'hook') a = { ...base, id: `hook:${p.name}/${name}:${d}`, name, title: `${name} · ${d}`, description: `Runs on ${name} for ${d}`, path: `plugins/${p.name}/hooks/hooks.json`, invoke: null, tokens: 0 };
+      else if (type === 'mcp') a = { ...base, id: `mcp:${p.name}/${name}`, name, title: name, description: d, path: `plugins/${p.name}/.mcp.json`, invoke: null, tokens: 0 };
+      else {
+        const t = Math.ceil((name.length + d.length) / 4); tokens += t;
+        a = { ...base, id: `${type}:${p.name}/${name}`, name, title: name, description: d, tokens, path: type === 'skill' ? `plugins/${p.name}/skills/${name}/SKILL.md` : `plugins/${p.name}/${type}s/${name}.md`, invoke: type === 'agent' ? `${p.name}:${name}` : `/${p.name}:${name}`, tokens: t };
+      }
+      const k = type === 'mcp' ? 'mcp' : type + 's'; counts[k] = (counts[k] || 0) + 1;
+      list.push(a); arts.push(a);
+    }
+    const pa = { id: `plugin:${p.name}`, type: 'plugin', name: p.name, title: p.name, description: p.description, plugin: null, invoke: null, tags: p.tags, category: p.category, path: `plugins/${p.name}`, install: `/plugin install ${p.name}@${MKT}`, external: !!p.external, sourceUrl: p.sourceUrl, updatedAt: p.updatedAt, tokens, counts };
+    arts.unshift(pa);
+    comps[p.name] = list.map(c => ({ type: c.type, title: c.title }));
+  }
+  for (const a of arts) a.F = [[5, tok(a.title)], [3, tok((a.tags || []).join(' ') + ' ' + (a.category || ''))], [3, tok(a.description)], [2, tok(a.plugin)]];
+  return { arts, comps };
+}
+const DATA = build();
+const EXTERNAL = new Set(P.filter(p => p.external).map(p => p.name));
+
+function parse(q) {
+  const kws = [], types = new Set();
+  for (const r of (q || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)) {
+    if (STOP.has(r)) continue;
+    if (TYPEW[r]) { types.add(TYPEW[r]); continue; }
+    kws.push(stem(r));
+  }
+  return { kws, types };
+}
+function search(arts, kws, types) {
+  const alts = kws.map(k => { const g = SYN.find(g => g.includes(k)); return [{ t: k, m: 1 }, ...(g ? g.filter(x => x !== k).map(t => ({ t, m: 0.8 })) : [])]; });
+  const out = [];
+  for (const a of arts) {
+    let total = 0, matched = 0;
+    for (const al of alts) {
+      let best = 0;
+      for (const { t, m } of al) { let s = 0; for (const [w, f] of a.F) s += w * mq(f, t); best = Math.max(best, s * m); }
+      if (best > 0) { matched++; total += best; }
+    }
+    if (!matched) continue;
+    let score = total * (matched / kws.length);
+    if (types.has(a.type)) score *= 1.6;
+    out.push({ a, score });
+  }
+  return out;
+}
+const byName = (x, y) => (x.a.type === 'plugin' ? 0 : 1) - (y.a.type === 'plugin' ? 0 : 1) || x.a.title.localeCompare(y.a.title);
+
+class Component extends DCLogic {
+  state = { page: 'search', input: '', query: '', type: 'all', cat: '', sort: 'best', bundle: [], panelOpen: false, sheetOpen: false, menuOpen: false, focused: false, themePref: null, sysDark: false, w: 1280, booting: true, retried: false, toast: '', clPlugin: '' };
+  outerRef = React.createRef(); scrollRef = React.createRef(); inputRef = React.createRef();
+
+  componentDidMount() {
+    const s = {};
+    try {
+      const u = new URLSearchParams(location.search);
+      if (u.get('q')) { s.input = s.query = u.get('q'); }
+      if (u.get('type')) s.type = u.get('type');
+      if (u.get('cat')) s.cat = u.get('cat');
+      if (u.get('sort')) s.sort = u.get('sort');
+      if (u.get('plugin')) s.clPlugin = u.get('plugin');
+      if (/changelog/.test(location.pathname) || u.get('page') === 'changelog') s.page = 'changelog';
+      const b = u.get('bundle');
+      const stored = JSON.parse(localStorage.getItem('ddm-bundle') || '[]');
+      s.bundle = (b ? b.split(',') : stored).filter(n => P.some(p => p.name === n));
+      s.themePref = localStorage.getItem('ddm-theme');
+    } catch (e) {}
+    try { this.mql = matchMedia('(prefers-color-scheme: dark)'); s.sysDark = this.mql.matches; this._mq = e => this.setState({ sysDark: e.matches }); this.mql.addEventListener('change', this._mq); } catch (e) {}
+    s.panelOpen = (s.bundle || []).length > 0;
+    this.setState(s);
+    this.observe();
+    this._boot = setTimeout(() => this.setState({ booting: false }), 450);
+    this._key = e => {
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (e.key === '/' && tag !== 'input' && tag !== 'textarea' && tag !== 'select') { if (this.state.page !== 'search') this.setState({ page: 'search' }); e.preventDefault(); setTimeout(() => this.inputRef.current && this.inputRef.current.focus(), 0); }
+      if (e.key === 'Escape' && (this.state.sheetOpen || this.state.menuOpen)) this.setState({ sheetOpen: false, menuOpen: false });
+    };
+    document.addEventListener('keydown', this._key);
+  }
+  observe() {
+    if (this.ro || !this.outerRef.current) return;
+    this.ro = new ResizeObserver(([e]) => this.setState({ w: Math.round(e.contentRect.width) }));
+    this.ro.observe(this.outerRef.current);
+  }
+  componentDidUpdate() {
+    this.observe();
+    const s = this.state, ps = this._prev || {};
+    this._prev = { ...s };
+    if (ps.bundle !== s.bundle) { try { localStorage.setItem('ddm-bundle', JSON.stringify(s.bundle)); } catch (e) {} }
+    if (ps.query !== s.query || ps.type !== s.type || ps.cat !== s.cat || ps.sort !== s.sort || ps.bundle !== s.bundle || ps.page !== s.page || ps.clPlugin !== s.clPlugin) {
+      try { history.replaceState(null, '', this.url()); } catch (e) {}
+    }
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this._key);
+    this.ro && this.ro.disconnect();
+    try { this.mql.removeEventListener('change', this._mq); } catch (e) {}
+    clearTimeout(this._deb); clearTimeout(this._boot); clearTimeout(this._toast);
+  }
+  url(forShare) {
+    const s = this.state, u = new URLSearchParams();
+    if (s.page === 'changelog') { u.set('page', 'changelog'); if (s.clPlugin) u.set('plugin', s.clPlugin); }
+    else {
+      if (s.query.trim() && !forShare) u.set('q', s.query.trim());
+      if (s.type !== 'all' && !forShare) u.set('type', s.type);
+      if (s.cat && !forShare) u.set('cat', s.cat);
+      if (s.sort !== 'best' && !forShare) u.set('sort', s.sort);
+    }
+    if (s.bundle.length) u.set('bundle', s.bundle.join(','));
+    const qs = u.toString().replace(/%2C/g, ',');
+    return location.pathname + (qs ? '?' + qs : '');
+  }
+  showToast = msg => { clearTimeout(this._toast); this.setState({ toast: msg }); this._toast = setTimeout(() => this.setState({ toast: '' }), 2600); };
+  setQuery = (v, now) => { this.setState({ input: v }); clearTimeout(this._deb); if (now) this.setState({ query: v }); else this._deb = setTimeout(() => this.setState({ query: v }), 120); };
+  toggleBundle = name => this.setState(s => {
+    const has = s.bundle.includes(name);
+    const bundle = has ? s.bundle.filter(n => n !== name) : [...s.bundle, name];
+    return { bundle, panelOpen: has ? s.panelOpen : true };
+  });
+  shareBundle = async () => {
+    const link = location.origin + this.url(true);
+    try { await navigator.clipboard.writeText(link); this.showToast('Bundle link copied'); } catch (e) { this.showToast('Copy blocked — link is in the address bar'); try { history.replaceState(null, '', this.url(true)); } catch (x) {} }
+  };
+  nav = page => e => { e && e.preventDefault(); this.setState({ page, menuOpen: false, sheetOpen: false }); if (this.scrollRef.current) this.scrollRef.current.scrollTop = 0; };
+
+  renderVals() {
+    const s = this.state, pr = this.props;
+    const frame = pr.frame || 'Fluid';
+    const simulate = pr.simulate || 'Live';
+    const showHM = pr.standaloneHooksMcp ?? true;
+    const w = frame === 'Mobile 390' ? Math.min(s.w, 390) : frame === 'Tablet 768' ? Math.min(s.w, 768) : s.w;
+    const isMobile = w < 640, isDesktop = w >= 1024;
+    const dark = (s.themePref || (s.sysDark ? 'dark' : 'light')) === 'dark';
+    const touch = !isDesktop;
+
+    const { kws, types } = parse(s.query);
+    const hasQuery = kws.length > 0;
+    const pool = DATA.arts.filter(a => showHM || (a.type !== 'hook' && a.type !== 'mcp'));
+    let scored = hasQuery ? search(pool, kws, types) : pool.map(a => ({ a, score: 0 }));
+    if (s.cat) scored = scored.filter(x => x.a.category === s.cat);
+    const counts = { all: scored.length }; TYPES.forEach(t => { counts[t] = scored.filter(x => x.a.type === t).length; });
+    let res = s.type === 'all' ? scored : scored.filter(x => x.a.type === s.type);
+    const sortEff = !hasQuery && s.sort === 'best' ? 'name' : s.sort;
+    res = res.slice().sort(sortEff === 'best' ? (x, y) => y.score - x.score || byName(x, y) : sortEff === 'updated' ? (x, y) => y.a.updatedAt.localeCompare(x.a.updatedAt) || byName(x, y) : byName);
+
+    const terms = hasQuery ? Array.from(new Set(kws.flatMap(k => { const g = SYN.find(g => g.includes(k)); return g ? g : [k]; }))) : [];
+    const wrap = x => ({ a: x.a, terms, components: x.a.type === 'plugin' ? DATA.comps[x.a.name] : [], inBundle: s.bundle.includes(x.a.type === 'plugin' ? x.a.name : x.a.plugin), toggle: this.toggleBundle, toast: this.showToast, touch });
+
+    const loading = simulate === 'Loading' || (s.booting && simulate === 'Live');
+    const error = simulate === 'Load error' && !s.retried;
+    const emptyCat = simulate === 'Empty catalog';
+    const ok = !loading && !error && !emptyCat;
+    const noRes = ok && res.length === 0;
+    const grouped = ok && !hasQuery && res.length > 0;
+    const groups = grouped ? TYPES.map(t => ({ t, items: res.filter(x => x.a.type === t) })).filter(g => g.items.length).map(g => ({ hid: 'g-' + g.t, label: PLURAL[g.t], count: g.items.length, items: g.items.map(wrap) })) : [];
+
+    const categories = Array.from(new Set(DATA.arts.map(a => a.category).filter(Boolean))).sort();
+    const hasFilters = s.type !== 'all' || !!s.cat;
+    const filterDesc = [s.type !== 'all' ? 'type “' + PLURAL[s.type] + '”' : '', s.cat ? 'category “' + s.cat + '”' : ''].filter(Boolean).join(' and ');
+    const n = res.length;
+    const countLine = loading ? 'Loading…' : !ok ? '' : hasQuery ? `${n} result${n === 1 ? '' : 's'}` : `${n} item${n === 1 ? '' : 's'}`;
+
+    const bundleRows = s.bundle.map(name => ({ name, external: EXTERNAL.has(name) }));
+    const suggestHref = `${GH}/issues/new?template=plugin-suggestion.yml&title=${('Plugin suggestion: ' + (s.query.trim() || '')).trim().replace(/ /g, '+').slice(0, 300)}`;
+
+    let changes = [];
+    CHANGES.forEach(([date, sha, subject, plugins]) => (plugins.length ? plugins : ['(marketplace)']).forEach(p => changes.push({ date, sha, subject, plugin: p })));
+    if (s.clPlugin) changes = changes.filter(c => c.plugin === s.clPlugin);
+    const dayMap = {}; changes.forEach(c => { (dayMap[c.date] = dayMap[c.date] || []).push(c); });
+    const days = Object.keys(dayMap).sort().reverse().map(date => {
+      const [y, m, d] = date.split('-').map(Number);
+      return { date, hid: 'd-' + date, weekday: new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en', { weekday: 'long', timeZone: 'UTC' }), rows: dayMap[date].map(c => ({ plugin: c.plugin === '(marketplace)' ? 'marketplace' : c.plugin, subject: c.subject, sha: c.sha, href: `${GH}/commit/${c.sha}`, shaAria: `Commit ${c.sha} on GitHub`, dot: c.plugin === '(marketplace)' ? 'var(--muted)' : `oklch(${dark ? 0.72 : 0.6} 0.13 ${hue(c.plugin)})`, filter: () => this.setState({ clPlugin: c.plugin }), filterTitle: 'Show only ' + c.plugin })) };
+    });
+
+    const framed = frame !== 'Fluid';
+    const bc = s.bundle.length;
+    return {
+      outerRef: this.outerRef, scrollRef: this.scrollRef, inputRef: this.inputRef,
+      theme: dark ? 'dark' : 'light', isDark: dark, isLight: !dark,
+      themeLabel: dark ? 'Switch to light theme' : 'Switch to dark theme',
+      toggleTheme: () => { const next = dark ? 'light' : 'dark'; try { localStorage.setItem('ddm-theme', next); } catch (e) {} this.setState({ themePref: next }); },
+      frameW: framed ? (frame === 'Mobile 390' ? '390px' : '768px') : '100%',
+      frameH: framed ? '844px' : '100vh', frameMargin: framed ? '24px auto' : '0', frameRadius: framed ? '14px' : '0', frameShadow: framed ? '0 0 0 1px oklch(0.2 0.01 260/0.15), 0 20px 50px oklch(0.2 0.01 260/0.2)' : 'none',
+      padX: isMobile ? 16 : 24, isMobile, notMobile: !isMobile, iconBtn: isMobile ? 44 : 36, toolsMargin: isMobile ? 'auto' : '0',
+      menuOpen: s.menuOpen && isMobile, menuStr: String(s.menuOpen), toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      gh: GH, commitHref: GH + '/commit/a1b2c3d', suggestHref,
+      onSearch: s.page === 'search', onChangelog: s.page === 'changelog',
+      goSearch: this.nav('search'), goChangelog: this.nav('changelog'),
+      curSearch: s.page === 'search' ? 'page' : undefined, curChange: s.page === 'changelog' ? 'page' : undefined,
+      navSearchBg: s.page === 'search' ? 'var(--surface-2)' : 'transparent', navChangeBg: s.page === 'changelog' ? 'var(--surface-2)' : 'transparent',
+      navSearchW: s.page === 'search' ? 600 : 400, navChangeW: s.page === 'changelog' ? 600 : 400,
+      showHero: !s.input.trim(), heroPad: s.input.trim() ? '20px' : (isMobile ? '32px' : '64px'), h1Size: isMobile ? 24 : 32,
+      searchMax: 720, searchH: isMobile ? 52 : 56,
+      searchBorder: s.focused ? 'var(--accent)' : 'var(--border-strong)',
+      searchRing: s.focused ? '0 0 0 3px var(--accent-soft)' : 'none',
+      input: s.input, hasInput: !!s.input, showKbd: isDesktop && !s.input && !s.focused,
+      onInput: e => this.setQuery(e.target.value),
+      onInputKey: e => { if (e.key === 'Escape') { e.preventDefault(); this.setQuery('', true); } },
+      onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
+      clearQuery: () => { this.setQuery('', true); this.inputRef.current && this.inputRef.current.focus(); },
+      examples: ['code review', 'commit messages', 'testing', 'docs'].map(label => ({ label, pick: () => this.setQuery(label, true) })),
+      chipH: touch ? 44 : 32, selH: touch ? 44 : 32, filterTop: s.input.trim() ? 16 : (isMobile ? 24 : 32),
+      typeChips: ['all', ...TYPES].map(t => {
+        const on = s.type === t, c = counts[t], dis = !on && c === 0 && t !== 'all';
+        return { label: t === 'all' ? 'All' : PLURAL[t], count: ok ? c : '–', checked: String(on), disabled: dis, pick: () => this.setState({ type: t }), border: on ? 'var(--accent)' : 'var(--border)', bg: on ? 'var(--accent-soft)' : 'var(--surface)', weight: on ? 600 : 400, cursor: dis ? 'default' : 'pointer', opacity: dis ? 0.45 : 1 };
+      }),
+      hasCategories: categories.length > 0, categories, cat: s.cat, onCat: e => this.setState({ cat: e.target.value }),
+      hasFilters, filterDesc, resetFilters: () => this.setState({ type: 'all', cat: '' }),
+      countLine, sortEff, bestDisabled: !hasQuery, onSort: e => this.setState({ sort: e.target.value }),
+      query: s.query.trim(),
+      stLoading: loading, stError: error, stEmptyCatalog: emptyCat, stNoResults: noRes, stGrouped: grouped, stFlat: ok && hasQuery && n > 0,
+      skeletons: [1, 2, 3, 4, 5, 6],
+      retry: () => { this.setState({ booting: true, retried: true }); clearTimeout(this._boot); this._boot = setTimeout(() => this.setState({ booting: false }), 700); },
+      groups, flat: grouped ? [] : res.map(wrap),
+      cardMin: isDesktop && !(s.panelOpen || bc) ? 272 : 284,
+      showAside: isDesktop && s.page === 'search', asideW: s.panelOpen ? 340 : 44,
+      panelOpen: s.panelOpen, panelClosed: !s.panelOpen,
+      openPanel: () => this.setState({ panelOpen: true }), closePanel: () => this.setState({ panelOpen: false }),
+      bundleRows, bundleCount: bc, bundleTabAria: `Open bundle, ${bc} plugin${bc === 1 ? '' : 's'}`,
+      removeFromBundle: name => this.setState(st => ({ bundle: st.bundle.filter(x => x !== name) })),
+      clearBundle: () => this.setState({ bundle: [] }),
+      shareBundle: this.shareBundle, showToast: this.showToast,
+      showFab: !isDesktop && s.page === 'search' && !s.sheetOpen,
+      fabBg: bc ? 'var(--accent)' : 'var(--surface)', fabFg: bc ? 'var(--on-accent)' : 'var(--text)', fabBorder: bc ? 'var(--accent)' : 'var(--border-strong)',
+      openSheet: () => this.setState({ sheetOpen: true }), closeSheet: () => this.setState({ sheetOpen: false }),
+      sheetOpen: s.sheetOpen && !isDesktop,
+      footerPad: !isDesktop && s.page === 'search' ? 72 : 0, footLinkH: touch ? 44 : 24,
+      toast: s.toast, toastBottom: isDesktop ? 24 : 80,
+      clPlugin: s.clPlugin, onClPlugin: e => this.setState({ clPlugin: e.target.value }),
+      pluginNames: P.map(p => p.name), days, clNameW: isMobile ? '100%' : '200px',
+    };
+  }
+}
+</script>
+</body>
+</html>

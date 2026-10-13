@@ -1,0 +1,91 @@
+# Catalog site: its own workflow, so its status never mixes with the marketplace "Validate marketplace" harness checks.
+# On the PR / commit status list it appears as three separate checks:
+#   Catalog site / Unit tests   Catalog site / Build site   Catalog site / Deploy to GitHub Pages
+name: Catalog site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "catalog-site/**"
+      - ".github/workflows/pages.yml"
+  pull_request:
+    paths:
+      - "catalog-site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag or commit SHA to build and deploy (empty = the selected branch). Use an older commit to roll the site back."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: catalog-site-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: catalog-site
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: catalog-site/package-lock.json
+      - run: npm ci
+      - name: Run tests (search, URL state, bundle output, UI text guard)
+        run: npm test
+
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: catalog-site
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: catalog-site/package-lock.json
+      - run: npm ci
+      - name: Build (vite build -> catalog-site/dist)
+        run: npm run build
+      - name: Upload Pages artifact
+        # Pull requests only prove that the site builds; they never publish.
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: catalog-site/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
