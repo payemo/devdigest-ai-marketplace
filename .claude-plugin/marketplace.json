@@ -4,5 +4,26 @@
   "owner": {
     "name": "DevDigest"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "engineering-paved-path",
+      "source": "./plugins/engineering-paved-path",
+      "description": "Shared engineering skills: React, Next.js, Fastify, onion architecture, React Testing Library and OWASP-based security guidance"
+    },
+    {
+      "name": "research-tools",
+      "source": "./plugins/research-tools",
+      "description": "A read-only researcher agent that answers one question about a codebase or an external library with citations"
+    },
+    {
+      "name": "architecture-review",
+      "source": "./plugins/architecture-review",
+      "description": "A read-only architecture-reviewer agent that checks a diff for onion-architecture layering and dependency-direction violations"
+    },
+    {
+      "name": "sdd-engineering",
+      "source": "./plugins/sdd-engineering",
+      "description": "Spec Driven Development for Claude Code: spec → plan → implement → verify → retro, with agents, skills and bounded review loops"
+    }
+  ]
 }
