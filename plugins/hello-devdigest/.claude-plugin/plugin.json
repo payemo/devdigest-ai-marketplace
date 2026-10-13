@@ -1,0 +1,9 @@
+{
+  "name": "hello-devdigest",
+  "description": "Sample plugin with a single greeting skill",
+  "author": {
+    "name": "DevDigest"
+  },
+  "license": "MIT",
+  "keywords": ["sample"]
+}

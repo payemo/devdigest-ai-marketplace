@@ -1,0 +1,22 @@
+name: Validate marketplace
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Linter self-tests
+        run: node --test "scripts/*.test.mjs"
+      - name: Structural lint (warnings fail the build)
+        run: node scripts/validate-marketplace.mjs --strict

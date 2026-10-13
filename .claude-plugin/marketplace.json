@@ -1,0 +1,14 @@
+{
+  "name": "devdigest-marketplace",
+  "description": "DevDigest AI plugins for Claude Code",
+  "owner": {
+    "name": "DevDigest"
+  },
+  "plugins": [
+    {
+      "name": "hello-devdigest",
+      "source": "./plugins/hello-devdigest",
+      "description": "Sample plugin with a single greeting skill"
+    }
+  ]
+}
