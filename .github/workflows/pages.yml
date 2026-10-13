@@ -8,10 +8,18 @@ on:
     branches: [main]
     paths:
       - "catalog-site/**"
+      - ".claude-plugin/**"
+      - "plugins/**"
+      - "scripts/build-catalog.mjs"
+      - "scripts/validate-marketplace.mjs"
       - ".github/workflows/pages.yml"
   pull_request:
     paths:
       - "catalog-site/**"
+      - ".claude-plugin/**"
+      - "plugins/**"
+      - "scripts/build-catalog.mjs"
+      - "scripts/validate-marketplace.mjs"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
     inputs:
@@ -57,13 +65,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
+          fetch-depth: 0 # the catalog uses git history for "last updated" dates and the What's new page
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: catalog-site/package-lock.json
       - run: npm ci
-      - name: Build (vite build -> catalog-site/dist)
+      - name: Build (generates catalog.json, feed.xml, llms.txt from the plugins, then vite build -> catalog-site/dist)
         run: npm run build
       - name: Upload Pages artifact
         # Pull requests only prove that the site builds; they never publish.

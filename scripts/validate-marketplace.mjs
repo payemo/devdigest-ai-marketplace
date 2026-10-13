@@ -303,7 +303,7 @@ function normalizeDependencies(manifest, where, report) {
 function isTextFile(file) { return TEXT_EXTENSIONS.has(path.extname(file).toLowerCase()); }
 
 // Minimal frontmatter reader that understands folded/literal blocks (`description: >`), which parseFrontmatter does not.
-function frontmatterFields(text) {
+export function frontmatterFields(text) {
   const m = text.replace(/^﻿/, '').match(/^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/);
   if (!m) return undefined;
   const fields = {};

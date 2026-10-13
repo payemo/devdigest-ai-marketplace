@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { buildIndex, runQuery, parseQuery, highlightSegments } from './search.js';
 import { deriveCatalog } from './catalog.js';
 
-const catalog = deriveCatalog(JSON.parse(readFileSync(new URL('../../public/catalog.json', import.meta.url), 'utf8')));
+const catalog = deriveCatalog(JSON.parse(readFileSync(new URL('./fixtures/catalog.sample.json', import.meta.url), 'utf8')));
 const index = buildIndex(catalog.artifacts);
 const ids = (q, extra) => runQuery(index, { query: q, ...extra }).results.map((r) => r.a.id);
 

@@ -7,7 +7,10 @@
     "node": ">=22"
   },
   "scripts": {
+    "catalog": "node ../scripts/build-catalog.mjs --out public",
+    "predev": "npm run catalog",
     "dev": "vite",
+    "prebuild": "npm run catalog",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run"
