@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./vendor/react.production.min.js"></script>
+<script src="./vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+:root,[data-theme="light"]{--bg:oklch(0.985 0.002 260);--surface:#fff;--surface-2:oklch(0.965 0.003 260);--border:oklch(0.905 0.004 260);--border-strong:oklch(0.82 0.006 260);--text:oklch(0.22 0.012 260);--muted:oklch(0.47 0.012 260);--accent:oklch(0.5 0.15 262);--on-accent:#fff;--accent-soft:oklch(0.95 0.025 262);--focus:oklch(0.58 0.18 262);--success:oklch(0.5 0.12 150);--warning:oklch(0.55 0.12 70);--shadow:0 1px 2px oklch(0.2 0.01 260/0.06),0 6px 20px oklch(0.2 0.01 260/0.08);--sans:system-ui,-apple-system,"Segoe UI",sans-serif;--mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;color-scheme:light}
+[data-theme="dark"]{--bg:oklch(0.17 0.006 260);--surface:oklch(0.205 0.007 260);--surface-2:oklch(0.245 0.008 260);--border:oklch(0.3 0.009 260);--border-strong:oklch(0.39 0.01 260);--text:oklch(0.94 0.005 260);--muted:oklch(0.72 0.01 260);--accent:oklch(0.76 0.12 262);--on-accent:oklch(0.17 0.02 262);--accent-soft:oklch(0.3 0.06 262);--focus:oklch(0.76 0.14 262);--success:oklch(0.76 0.13 150);--warning:oklch(0.8 0.12 75);--shadow:0 1px 2px oklch(0 0 0/0.3),0 8px 24px oklch(0 0 0/0.35);color-scheme:dark}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+</style>
+</helmet>
+<section aria-labelledby="{{ hid }}" style="display:flex;flex-direction:column;gap:16px;box-sizing:border-box;background:var(--surface);border:{{ border }};border-radius:10px;padding:16px;font-family:var(--sans);color:var(--text);min-width:0">
+  <div style="display:flex;align-items:center;gap:8px;min-height:32px">
+    <h2 id="{{ hid }}" style="margin:0;font:600 14px/1.2 var(--sans);display:flex;align-items:center;gap:8px">Your bundle <span style="min-width:22px;height:20px;padding:0 6px;display:inline-grid;place-items:center;border-radius:10px;background:{{ countBg }};color:{{ countFg }};font:600 11.5px/1 var(--mono)">{{ n }}</span></h2>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:2px">
+      <sc-if value="{{ filled }}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{ share }}" style="height:{{ btnH }}px;padding:0 8px;border:0;border-radius:6px;background:transparent;color:var(--accent);font:500 12.5px/1 var(--sans);cursor:pointer" style-hover="background:var(--surface-2)">Share link</button>
+        <button type="button" onClick="{{ clear }}" style="height:{{ btnH }}px;padding:0 8px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:500 12.5px/1 var(--sans);cursor:pointer" style-hover="background:var(--surface-2);color:var(--text)">Clear</button>
+      </sc-if>
+      <sc-if value="{{ hasClose }}" hint-placeholder-val="{{ true }}">
+        <button type="button" onClick="{{ close }}" aria-label="{{ closeLabel }}" style="width:{{ btnH }}px;height:{{ btnH }}px;display:grid;place-items:center;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer" style-hover="background:var(--surface-2);color:var(--text)">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </sc-if>
+    </div>
+  </div>
+  <sc-if value="{{ empty }}" hint-placeholder-val="{{ true }}">
+    <p style="margin:0;padding:16px;border:1px dashed var(--border-strong);border-radius:8px;font-size:13.5px;line-height:1.55;color:var(--muted);text-wrap:pretty">Select plugins with the <strong style="display:inline-grid;place-items:center;width:20px;height:20px;vertical-align:-4px;border:1px solid var(--border-strong);border-radius:5px;color:var(--text);font:600 14px/1 var(--mono)">+</strong> button on any card. Commands and a team settings snippet appear here.</p>
+  </sc-if>
+  <sc-if value="{{ filled }}" hint-placeholder-val="{{ false }}">
+    <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;max-height:220px;overflow:auto;border-top:1px solid var(--border)">
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="2">
+        <li style="display:flex;align-items:center;gap:8px;min-height:{{ rowH }}px;border-bottom:1px solid var(--border);min-width:0">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="flex:none;fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><polyline points="5 12.5 10 17 19 7"></polyline></svg>
+          <span style="flex:1;min-width:0;font:13px/1.35 var(--mono);overflow-wrap:anywhere">{{ r.name }}</span>
+          <sc-if value="{{ r.external }}"><span style="flex:none;font:600 9.5px/1 var(--mono);letter-spacing:0.06em;text-transform:uppercase;padding:3px 4px;border-radius:4px;border:1px solid var(--border-strong);color:var(--muted)">External</span></sc-if>
+          <button type="button" onClick="{{ r.remove }}" aria-label="{{ r.aria }}" style="flex:none;height:{{ btnH }}px;display:inline-flex;align-items:center;gap:4px;padding:0 8px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:500 12.5px/1 var(--sans);cursor:pointer" style-hover="background:var(--surface-2);color:var(--text)">remove <span aria-hidden="true" style="font-size:15px">×</span></button>
+        </li>
+      </sc-for>
+    </ul>
+    <fieldset style="margin:0;padding:0;border:0;min-width:0;display:flex;flex-direction:column;gap:8px">
+      <legend style="padding:0;margin-bottom:8px;font:600 12.5px/1.2 var(--sans);color:var(--text)">Install with</legend>
+      <div style="display:flex;gap:4px;padding:3px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)">
+        <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+          <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:{{ segH }}px;border-radius:6px;cursor:pointer;font:500 12.5px/1.2 var(--sans);background:{{ m.bg }};color:var(--text);box-shadow:{{ m.shadow }}">
+            <input type="radio" name="{{ radioName }}" value="{{ m.key }}" checked="{{ m.on }}" onChange="{{ m.pick }}" style="margin:0;accent-color:var(--accent)">
+            <span>{{ m.label }}</span>
+          </label>
+        </sc-for>
+      </div>
+      <pre aria-label="Install commands" style="margin:0;padding:12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font:12px/1.65 var(--mono);color:var(--text);white-space:pre;overflow-x:auto">{{ commands }}</pre>
+      <button type="button" onClick="{{ copyCmds }}" style="align-self:flex-start;height:{{ btnH }}px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:7px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);font:600 13px/1 var(--sans);cursor:pointer" style-hover="filter:brightness(1.08)" style-active="transform:translateY(1px)">
+        <sc-if value="{{ cmdCopied }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><polyline points="5 12.5 10 17 19 7"></polyline></svg></sc-if>
+        <sc-if value="{{ cmdNotCopied }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round"><rect x="8.5" y="8.5" width="11" height="11" rx="2"></rect><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"></path></svg></sc-if>
+        <span>{{ cmdLabel }}</span>
+      </button>
+    </fieldset>
+    <div style="display:flex;flex-direction:column;gap:8px;padding-top:16px;border-top:1px solid var(--border)">
+      <h3 style="margin:0;font:600 12.5px/1.2 var(--sans)">Share with your team <span style="font-family:var(--mono);font-weight:400;color:var(--muted)">settings.json</span></h3>
+      <pre aria-label="settings.json snippet" style="margin:0;padding:12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font:12px/1.6 var(--mono);color:var(--text);white-space:pre;overflow-x:auto">{{ json }}</pre>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px">
+        <button type="button" onClick="{{ copyJson }}" style="height:{{ btnH }}px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);color:{{ jsonColor }};font:500 13px/1 var(--sans);cursor:pointer" style-hover="background:var(--surface-2)" style-active="transform:translateY(1px)">
+          <sc-if value="{{ jsonCopied }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><polyline points="5 12.5 10 17 19 7"></polyline></svg></sc-if>
+          <sc-if value="{{ jsonNotCopied }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round"><rect x="8.5" y="8.5" width="11" height="11" rx="2"></rect><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"></path></svg></sc-if>
+          <span>{{ jsonLabel }}</span>
+        </button>
+        <span style="font-size:12.5px;line-height:1.4;color:var(--muted)">Put this in <code style="font-family:var(--mono);color:var(--text)">.claude/settings.json</code></span>
+      </div>
+      <sc-if value="{{ hasExternal }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:0;padding:10px 12px;border-radius:8px;background:var(--surface-2);font-size:12.5px;line-height:1.5;color:var(--muted);text-wrap:pretty">Teammates still run <code style="font-family:var(--mono);color:var(--text);overflow-wrap:anywhere">claude plugin install {{ extName }}@{{ mkt }} --scope project</code> once for plugins whose files live outside this repository.</p>
+      </sc-if>
+    </div>
+  </sc-if>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360,&quot;height&quot;:720},&quot;plugins&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{name:string, external:boolean}[]&quot;},&quot;onRemove&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(name:string)=&gt;void&quot;},&quot;onClear&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;()=&gt;void&quot;},&quot;onClose&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;()=&gt;void&quot;},&quot;onShare&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;()=&gt;void&quot;},&quot;onToast&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(msg:string)=&gt;void&quot;},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;panel&quot;,&quot;sheet&quot;],&quot;default&quot;:&quot;panel&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;touch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;sampleEmpty&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const MKT = 'devdigest-marketplace', REPO = 'payemo/devdigest-ai-marketplace';
+let uid = 0;
+class Component extends DCLogic {
+  state = { mode: 'claude', cmd: false, js: false, local: null };
+  uid = 'bp' + (++uid);
+  componentWillUnmount() { clearTimeout(this._a); clearTimeout(this._b); }
+  async write(text, key) {
+    try {
+      if (!navigator.clipboard) throw 0;
+      await navigator.clipboard.writeText(text);
+      this.setState({ [key]: true });
+      const t = key === 'cmd' ? '_a' : '_b'; clearTimeout(this[t]);
+      this[t] = setTimeout(() => this.setState({ [key]: false }), 2000);
+    } catch (e) { this.props.onToast && this.props.onToast('Copy blocked — select the text and press Ctrl+C / ⌘C.'); }
+  }
+  renderVals() {
+    const sample = [{ name: 'hello-devdigest', external: false }, { name: 'code-review', external: false }];
+    const plugins = this.props.plugins ?? this.state.local ?? (this.props.sampleEmpty ? [] : sample);
+    const mode = this.props.forceMode || this.state.mode;
+    const n = plugins.length, touch = !!this.props.touch, sheet = this.props.variant === 'sheet';
+    const pre = mode === 'claude' ? '/plugin' : 'claude plugin';
+    const commands = [`${pre} marketplace add ${REPO}`, ...plugins.map(p => `${pre} install ${p.name}@${MKT}`)].join('\n');
+    const enabled = {}; plugins.forEach(p => { enabled[`${p.name}@${MKT}`] = true; });
+    const json = JSON.stringify({ extraKnownMarketplaces: { [MKT]: { source: { source: 'github', repo: REPO } } }, enabledPlugins: enabled }, null, 2);
+    const ext = plugins.filter(p => p.external);
+    const remove = name => this.props.onRemove ? this.props.onRemove(name) : this.setState({ local: plugins.filter(p => p.name !== name) });
+    return {
+      hid: this.uid + '-h', radioName: this.uid + '-mode',
+      border: sheet ? '0' : '1px solid var(--border)',
+      n, empty: n === 0, filled: n > 0,
+      countBg: n ? 'var(--accent)' : 'var(--surface-2)', countFg: n ? 'var(--on-accent)' : 'var(--muted)',
+      btnH: touch ? 44 : 32, rowH: touch ? 48 : 38, segH: touch ? 44 : 32,
+      hasClose: !!this.props.onClose, close: () => this.props.onClose && this.props.onClose(),
+      closeLabel: sheet ? 'Close bundle' : 'Collapse bundle panel',
+      share: () => this.props.onShare ? this.props.onShare() : null,
+      clear: () => this.props.onClear ? this.props.onClear() : this.setState({ local: [] }),
+      rows: plugins.map(p => ({ name: p.name, external: !!p.external, aria: `Remove ${p.name} from bundle`, remove: () => remove(p.name) })),
+      modes: [['claude', 'In Claude Code'], ['shell', 'From the shell']].map(([key, label]) => ({ key, label, on: mode === key, bg: mode === key ? 'var(--surface)' : 'transparent', shadow: mode === key ? '0 0 0 1px var(--border-strong)' : 'none', pick: () => this.setState({ mode: key }) })),
+      commands, json,
+      cmdCopied: this.state.cmd, cmdNotCopied: !this.state.cmd, cmdLabel: this.state.cmd ? 'Copied' : 'Copy commands',
+      jsonCopied: this.state.js, jsonNotCopied: !this.state.js, jsonLabel: this.state.js ? 'Copied' : 'Copy JSON',
+      jsonColor: this.state.js ? 'var(--success)' : 'var(--text)',
+      copyCmds: () => this.write(commands, 'cmd'), copyJson: () => this.write(json, 'js'),
+      hasExternal: ext.length > 0, extName: ext.length === 1 ? ext[0].name : '<name>', mkt: MKT,
+    };
+  }
+}
+</script>
+</body>
+</html>

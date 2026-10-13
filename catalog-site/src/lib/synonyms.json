@@ -1,0 +1,10 @@
+[
+  ["review", "audit", "critique", "check"],
+  ["greet", "hello", "welcome"],
+  ["test", "spec", "unit"],
+  ["doc", "documentation", "readme"],
+  ["commit", "changelog"],
+  ["security", "secret", "vulnerability", "secure"],
+  ["pr", "pull"],
+  ["i18n", "translation", "locale", "l10n"]
+]

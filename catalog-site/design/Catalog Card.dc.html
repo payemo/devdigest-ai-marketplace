@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./vendor/react.production.min.js"></script>
+<script src="./vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+:root,[data-theme="light"]{--bg:oklch(0.985 0.002 260);--surface:#fff;--surface-2:oklch(0.965 0.003 260);--border:oklch(0.905 0.004 260);--border-strong:oklch(0.82 0.006 260);--text:oklch(0.22 0.012 260);--muted:oklch(0.47 0.012 260);--accent:oklch(0.5 0.15 262);--on-accent:#fff;--accent-soft:oklch(0.95 0.025 262);--focus:oklch(0.58 0.18 262);--hl:oklch(0.91 0.1 95);--success:oklch(0.5 0.12 150);--warning:oklch(0.55 0.12 70);--danger:oklch(0.52 0.17 25);--shadow:0 1px 2px oklch(0.2 0.01 260/0.06),0 6px 20px oklch(0.2 0.01 260/0.08);--scrim:oklch(0.2 0.01 260/0.35);--b-plugin-bg:oklch(0.95 0.035 300);--b-plugin-fg:oklch(0.42 0.12 300);--b-skill-bg:oklch(0.95 0.04 155);--b-skill-fg:oklch(0.4 0.09 155);--b-agent-bg:oklch(0.95 0.035 45);--b-agent-fg:oklch(0.45 0.11 45);--b-command-bg:oklch(0.95 0.03 235);--b-command-fg:oklch(0.42 0.1 235);--b-hook-bg:oklch(0.95 0.045 90);--b-hook-fg:oklch(0.43 0.08 90);--b-mcp-bg:oklch(0.95 0.035 350);--b-mcp-fg:oklch(0.45 0.12 350);--sans:system-ui,-apple-system,"Segoe UI",sans-serif;--mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;color-scheme:light}
+[data-theme="dark"]{--bg:oklch(0.17 0.006 260);--surface:oklch(0.205 0.007 260);--surface-2:oklch(0.245 0.008 260);--border:oklch(0.3 0.009 260);--border-strong:oklch(0.39 0.01 260);--text:oklch(0.94 0.005 260);--muted:oklch(0.72 0.01 260);--accent:oklch(0.76 0.12 262);--on-accent:oklch(0.17 0.02 262);--accent-soft:oklch(0.3 0.06 262);--focus:oklch(0.76 0.14 262);--hl:oklch(0.44 0.09 95);--success:oklch(0.76 0.13 150);--warning:oklch(0.8 0.12 75);--danger:oklch(0.72 0.15 25);--shadow:0 1px 2px oklch(0 0 0/0.3),0 8px 24px oklch(0 0 0/0.35);--scrim:oklch(0 0 0/0.55);--b-plugin-bg:oklch(0.3 0.05 300);--b-plugin-fg:oklch(0.86 0.08 300);--b-skill-bg:oklch(0.3 0.05 155);--b-skill-fg:oklch(0.86 0.08 155);--b-agent-bg:oklch(0.3 0.05 45);--b-agent-fg:oklch(0.86 0.08 45);--b-command-bg:oklch(0.3 0.05 235);--b-command-fg:oklch(0.86 0.08 235);--b-hook-bg:oklch(0.3 0.05 90);--b-hook-fg:oklch(0.86 0.08 90);--b-mcp-bg:oklch(0.3 0.05 350);--b-mcp-fg:oklch(0.86 0.08 350);color-scheme:dark}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<article ref="{{ rootRef }}" aria-labelledby="{{ titleId }}" onMouseEnter="{{ enter }}" onMouseLeave="{{ leave }}" onKeyDown="{{ onKey }}" style="position:relative;height:100%;box-sizing:border-box;display:flex;flex-direction:column;background:var(--surface);border:1px solid {{ borderColor }};border-radius:10px;box-shadow:{{ shadow }};transition:box-shadow 120ms ease,border-color 120ms ease;font-family:var(--sans);color:var(--text);min-width:0">
+  <div style="flex:1;display:flex;flex-direction:column;gap:8px;padding:16px 16px 0;min-width:0">
+    <div style="display:flex;align-items:center;gap:6px;min-width:0">
+      <span style="flex:none;font:600 10.5px/1 var(--mono);letter-spacing:0.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;background:{{ badgeBg }};color:{{ badgeFg }}">{{ typeLabel }}</span>
+      <sc-if value="{{ item.external }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font:600 10.5px/1 var(--mono);letter-spacing:0.06em;text-transform:uppercase;padding:3px 5px;border-radius:4px;border:1px solid var(--border-strong);color:var(--muted)">External</span></sc-if>
+      <span style="margin-left:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:12px/1.3 var(--mono);color:var(--muted)">{{ topRight }}</span>
+    </div>
+    <h3 id="{{ titleId }}" style="margin:2px 0 0;font:600 15px/1.35 var(--mono);color:var(--text);overflow-wrap:anywhere;text-wrap:pretty">
+      <sc-for list="{{ titleSegs }}" as="s" hint-placeholder-count="1"><sc-if value="{{ s.hl }}"><mark style="background:var(--hl);color:inherit;border-radius:2px">{{ s.t }}</mark></sc-if><sc-if value="{{ s.plain }}"><span>{{ s.t }}</span></sc-if></sc-for>
+    </h3>
+    <sc-if value="{{ item.invoke }}" hint-placeholder-val="{{ false }}"><code style="font:12.5px/1.3 var(--mono);color:var(--muted);overflow-wrap:anywhere">{{ item.invoke }}</code></sc-if>
+    <sc-if value="{{ countsLine }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;line-height:1.4;color:var(--muted)">{{ countsLine }}</div></sc-if>
+    <sc-if value="{{ hasDesc }}" hint-placeholder-val="{{ true }}">
+      <p id="{{ descId }}" style="margin:2px 0 0;font-size:14px;line-height:1.5;color:var(--text);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:{{ clamp }};overflow:hidden;overflow-wrap:anywhere;text-wrap:pretty">
+        <sc-for list="{{ descSegs }}" as="s" hint-placeholder-count="1"><sc-if value="{{ s.hl }}"><mark style="background:var(--hl);color:inherit;border-radius:2px">{{ s.t }}</mark></sc-if><sc-if value="{{ s.plain }}"><span>{{ s.t }}</span></sc-if></sc-for>
+      </p>
+    </sc-if>
+    <sc-if value="{{ noDesc }}" hint-placeholder-val="{{ false }}"><p style="margin:2px 0 0;font-size:14px;line-height:1.5;color:var(--muted);font-style:italic">No description provided.</p></sc-if>
+    <sc-if value="{{ hasTags }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-wrap:wrap;gap:4px 10px;font:12px/1.4 var(--mono);color:var(--muted)">
+        <sc-for list="{{ tags }}" as="t" hint-placeholder-count="2"><span>#<sc-for list="{{ t.segs }}" as="s"><sc-if value="{{ s.hl }}"><mark style="background:var(--hl);color:var(--text);border-radius:2px">{{ s.t }}</mark></sc-if><sc-if value="{{ s.plain }}"><span>{{ s.t }}</span></sc-if></sc-for></span></sc-for>
+        <sc-if value="{{ moreTags }}"><span>{{ moreTags }}</span></sc-if>
+      </div>
+    </sc-if>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:12.5px;line-height:1.4;color:var(--muted);margin-top:auto;padding-top:4px">
+      <sc-if value="{{ hasTokens }}" hint-placeholder-val="{{ true }}">
+        <span style="position:relative;display:inline-flex;align-items:center;gap:4px">
+          <span>{{ tokensLine }}</span>
+          <button type="button" aria-label="About this estimate" aria-describedby="{{ tipId }}" onMouseEnter="{{ tipOn }}" onMouseLeave="{{ tipOff }}" onFocus="{{ tipOn }}" onBlur="{{ tipOff }}" style="width:20px;height:20px;display:inline-grid;place-items:center;padding:0;border:0;border-radius:10px;background:transparent;color:var(--muted);cursor:help" style-hover="color:var(--text);background:var(--surface-2)">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>
+          </button>
+          <sc-if value="{{ tip }}"><span role="tooltip" id="{{ tipId }}" style="position:absolute;z-index:30;bottom:calc(100% + 8px);left:0;width:250px;padding:10px 12px;border-radius:8px;background:var(--text);color:var(--bg);font-size:12.5px;line-height:1.45;box-shadow:var(--shadow)">Estimate based on name and description length. Run <code style="font-family:var(--mono)">claude plugin details {{ pluginName }}</code> for the exact figure.</span></sc-if>
+        </span>
+        <span aria-hidden="true">·</span>
+      </sc-if>
+      <span>Updated {{ updated }}</span>
+    </div>
+    <sc-if value="{{ expanded }}" hint-placeholder-val="{{ false }}">
+      <div id="{{ panelId }}" style="display:flex;flex-direction:column;gap:12px;margin-top:8px;padding-top:12px;border-top:1px dashed var(--border)">
+        <sc-if value="{{ showComponents }}">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font:600 11px/1 var(--sans);letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)">{{ componentsHeading }}</div>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+              <sc-for list="{{ components }}" as="c" hint-placeholder-count="3">
+                <li style="display:flex;align-items:center;gap:8px;min-height:28px;min-width:0">
+                  <span style="flex:none;width:64px;text-align:center;font:600 9.5px/1 var(--mono);letter-spacing:0.06em;text-transform:uppercase;padding:4px 0;border-radius:4px;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</span>
+                  <span style="font:13px/1.35 var(--mono);color:var(--text);overflow-wrap:anywhere;min-width:0">{{ c.title }}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+        <sc-if value="{{ item.external }}">
+          <p style="margin:0;font-size:13.5px;line-height:1.5;color:var(--text)">Contents are in the source repository. <a href="{{ item.sourceUrl }}" target="_blank" rel="noopener" style="color:var(--accent);text-underline-offset:2px">Open {{ sourceHost }} ↗</a></p>
+        </sc-if>
+        <dl style="margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;font-size:12.5px;line-height:1.4">
+          <dt style="color:var(--muted)">Source</dt><dd style="margin:0;font-family:var(--mono);overflow-wrap:anywhere">{{ sourcePath }}</dd>
+          <dt style="color:var(--muted)">Install</dt><dd style="margin:0;font-family:var(--mono);overflow-wrap:anywhere">{{ item.install }}</dd>
+          <dt style="color:var(--muted)">Updated</dt><dd style="margin:0;font-family:var(--mono)">{{ item.updatedAt }}</dd>
+        </dl>
+      </div>
+    </sc-if>
+  </div>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 6px;padding:12px;margin-top:14px;border-top:1px solid var(--border);position:relative">
+    <sc-if value="{{ showCopyBtn }}" hint-placeholder-val="{{ true }}">
+      <button type="button" onClick="{{ copy }}" aria-label="{{ copyAria }}" style="height:{{ btnH }}px;display:inline-flex;align-items:center;gap:6px;padding:0 10px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);color:{{ copyColor }};font:500 13px/1 var(--sans);cursor:pointer;white-space:nowrap" style-hover="background:var(--surface-2)" style-active="transform:translateY(1px)">
+        <sc-if value="{{ copied }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><polyline points="5 12.5 10 17 19 7"></polyline></svg><span>Copied</span></sc-if>
+        <sc-if value="{{ notCopied }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round"><rect x="8.5" y="8.5" width="11" height="11" rx="2"></rect><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"></path></svg><span>Copy install</span></sc-if>
+      </button>
+    </sc-if>
+    <sc-if value="{{ fallback }}" hint-placeholder-val="{{ false }}">
+      <input ref="{{ fieldRef }}" readOnly="{{ true }}" value="{{ item.install }}" aria-label="Install command — press Ctrl+C or ⌘C to copy" onFocus="{{ selectAll }}" onBlur="{{ endFallback }}" style="flex:1;min-width:0;height:{{ btnH }}px;padding:0 8px;border-radius:7px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--text);font:12px/1 var(--mono)">
+    </sc-if>
+    <button type="button" onClick="{{ toggleBundle }}" aria-pressed="{{ inBundleStr }}" aria-label="{{ bundleAria }}" title="{{ bundleAria }}" style="height:{{ btnH }}px;display:inline-flex;align-items:center;gap:6px;padding:0 10px;border-radius:7px;border:1px solid {{ bBorder }};background:{{ bBg }};color:{{ bColor }};font:500 13px/1 var(--sans);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--accent)" style-active="transform:translateY(1px)">
+      <sc-if value="{{ inBundle }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><polyline points="5 12.5 10 17 19 7"></polyline></svg></sc-if>
+      <sc-if value="{{ notInBundle }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></sc-if>
+      <span>{{ bundleLabel }}</span>
+    </button>
+    <div style="margin-left:auto;flex:none;display:flex;gap:4px"><button type="button" onClick="{{ toggleExpand }}" aria-expanded="{{ expandedStr }}" aria-controls="{{ panelId }}" aria-label="{{ expandAria }}" style="flex:none;width:{{ btnH }}px;height:{{ btnH }}px;display:grid;place-items:center;padding:0;border-radius:7px;border:1px solid transparent;background:{{ expBg }};color:var(--text);cursor:pointer" style-hover="background:var(--surface-2);border-color:var(--border)">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform 120ms ease;transform:{{ chevron }}"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <button type="button" onClick="{{ toggleMenu }}" aria-haspopup="menu" aria-expanded="{{ menuStr }}" aria-label="More actions" style="flex:none;width:{{ btnH }}px;height:{{ btnH }}px;display:grid;place-items:center;padding:0;border-radius:7px;border:1px solid transparent;background:{{ menuBg }};color:var(--text);cursor:pointer" style-hover="background:var(--surface-2);border-color:var(--border)">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:currentColor"><circle cx="5.5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="18.5" cy="12" r="1.6"></circle></svg>
+    </button></div>
+    <sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+      <div role="menu" aria-label="More actions" style="position:absolute;z-index:40;right:12px;bottom:calc(100% - 6px);min-width:210px;display:flex;flex-direction:column;padding:4px;border-radius:9px;border:1px solid var(--border-strong);background:var(--surface);box-shadow:var(--shadow)">
+        <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="3">
+          <a role="menuitem" href="{{ m.href }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:{{ menuH }}px;padding:0 10px;border-radius:6px;color:var(--text);text-decoration:none;font-size:13.5px" style-hover="background:var(--surface-2)">
+            <span>{{ m.label }}</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" style="fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M14 4h6v6"></path><path d="M20 4l-9 9"></path><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>
+          </a>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+</article>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:360},&quot;item&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;terms&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;components&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object[]&quot;},&quot;onToggleBundle&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(plugin: string) =&gt; void&quot;},&quot;onToast&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(msg: string) =&gt; void&quot;},&quot;inBundle&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;touch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;forceState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;none&quot;,&quot;hover&quot;,&quot;expanded&quot;,&quot;menu&quot;,&quot;copied&quot;,&quot;fallback&quot;,&quot;tip&quot;],&quot;default&quot;:&quot;none&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const TODAY = Date.UTC(2026, 9, 13);
+const GH = 'https://github.com/payemo/devdigest-ai-marketplace';
+const LABEL = { plugin: 'Plugin', skill: 'Skill', agent: 'Agent', command: 'Command', hook: 'Hook', mcp: 'MCP' };
+const stem = w => { w = w.toLowerCase(); if (w.length > 5 && w.endsWith('ing')) return w.slice(0, -3); if (w.length > 4 && w.endsWith('ed')) return w.slice(0, -2); if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1); return w; };
+function ed1(a, b) { if (a === b) return true; const la = a.length, lb = b.length; if (Math.abs(la - lb) > 1) return false; let i = 0, j = 0, d = 0; while (i < la && j < lb) { if (a[i] === b[j]) { i++; j++; continue; } if (++d > 1) return false; if (la > lb) i++; else if (lb > la) j++; else { i++; j++; } } return d + (la - i) + (lb - j) <= 1; }
+function hit(word, terms) { const r = word.toLowerCase(), s = stem(r); return terms.some(t => s === t || r === t || (t.length >= 3 && r.startsWith(t)) || (t.length >= 4 && s.length >= 4 && ed1(s, t))); }
+function segs(text, terms) {
+  const out = []; if (!text) return out;
+  const parts = String(text).split(/([A-Za-z0-9]+)/);
+  for (const p of parts) { if (!p) continue; const hl = !!(terms && terms.length && /^[A-Za-z0-9]+$/.test(p) && hit(p, terms)); const last = out[out.length - 1]; if (last && !last.hl && !hl) last.t += p; else out.push({ t: p, hl, plain: !hl }); }
+  return out;
+}
+function rel(d) { if (!d) return '—'; const [y, m, dd] = d.split('-').map(Number); const n = Math.round((TODAY - Date.UTC(y, m - 1, dd)) / 864e5); if (n <= 0) return 'today'; if (n === 1) return 'yesterday'; if (n < 30) return n + 'd ago'; return new Date(Date.UTC(y, m - 1, dd)).toLocaleDateString('en', { month: 'short', day: 'numeric', timeZone: 'UTC' }); }
+const SAMPLE = { id: 'skill:hello-devdigest/hello', type: 'skill', name: 'hello', title: 'hello', description: 'Greets the user and confirms that the DevDigest marketplace plugin is installed and loading skills correctly.', plugin: 'hello-devdigest', invoke: '/hello-devdigest:hello', tags: ['sample', 'demo'], category: null, path: 'plugins/hello-devdigest/skills/hello/SKILL.md', install: '/plugin install hello-devdigest@devdigest-marketplace', external: false, updatedAt: '2026-10-08', tokens: 29 };
+let uid = 0;
+
+class Component extends DCLogic {
+  state = { expanded: false, menu: false, copied: false, fallback: false, hover: false, tip: false, localBundle: false };
+  rootRef = React.createRef();
+  fieldRef = React.createRef();
+  uid = 'c' + (++uid);
+  componentDidMount() {
+    this.applyForce();
+    this._doc = e => { if (this.state.menu && this.props.forceState !== 'menu' && this.rootRef.current && !this.rootRef.current.contains(e.target)) this.setState({ menu: false }); };
+    document.addEventListener('mousedown', this._doc);
+  }
+  componentWillUnmount() { document.removeEventListener('mousedown', this._doc); clearTimeout(this._t); }
+  componentDidUpdate() {
+    const pp = this._pp || {}, ps = this._ps || {};
+    this._pp = { ...this.props }; this._ps = { ...this.state };
+    if (!pp.__init && !this._seen) { this._seen = true; pp.item = this.props.item; pp.forceState = this.props.forceState; }
+    const id = (this.props.item || {}).id, pid = (pp.item || {}).id;
+    if (id !== pid) this.setState({ expanded: false, menu: false, copied: false, fallback: false, tip: false });
+    if (pp.forceState !== this.props.forceState) this.applyForce();
+    if (this.state.fallback && !ps.fallback && this.fieldRef.current && !this.props.forceState) { this.fieldRef.current.focus(); this.fieldRef.current.select(); }
+  }
+  applyForce() {
+    const f = this.props.forceState; if (!f || f === 'none') return;
+    this.setState({ expanded: f === 'expanded', menu: f === 'menu', copied: f === 'copied', fallback: f === 'fallback', hover: f === 'hover', tip: f === 'tip' });
+  }
+  copy = async () => {
+    const cmd = (this.props.item || SAMPLE).install;
+    try {
+      if (!navigator.clipboard) throw new Error('no clipboard');
+      await navigator.clipboard.writeText(cmd);
+      this.setState({ copied: true }); clearTimeout(this._t);
+      this._t = setTimeout(() => this.setState({ copied: false }), 2000);
+    } catch (e) {
+      this.setState({ fallback: true });
+      this.props.onToast && this.props.onToast('Copy blocked — command selected. Press Ctrl+C / ⌘C.');
+    }
+  };
+  renderVals() {
+    const it = this.props.item || SAMPLE;
+    const terms = this.props.terms || [];
+    const s = this.state;
+    const inBundle = this.props.inBundle ?? s.localBundle;
+    const touch = !!this.props.touch;
+    const hover = s.hover || this.props.forceState === 'hover';
+    const lift = hover || s.expanded;
+    const type = it.type;
+    const pluginName = type === 'plugin' ? it.name : it.plugin;
+    const tags = (it.tags || []).slice(0, 3).map(t => ({ segs: segs(t, terms) }));
+    const extra = (it.tags || []).length - 3;
+    let countsLine = '';
+    if (type === 'plugin' && it.counts) {
+      const order = [['skills', 'skill'], ['agents', 'agent'], ['commands', 'command'], ['hooks', 'hook'], ['mcp', 'MCP server']];
+      countsLine = order.filter(([k]) => it.counts[k]).map(([k, l]) => it.counts[k] + ' ' + l + (it.counts[k] > 1 ? 's' : '')).join(' · ');
+    }
+    if (type === 'plugin' && it.external) countsLine = '';
+    const comps = (this.props.components || []).map(c => ({ title: c.title, label: LABEL[c.type], bg: `var(--b-${c.type}-bg)`, fg: `var(--b-${c.type}-fg)` }));
+    const dir = it.path ? it.path.replace(/\/[^/]*\.[a-z]+$/i, '') : '';
+    const srcHref = it.external ? it.sourceUrl : (type === 'plugin' ? `${GH}/tree/main/${it.path}` : `${GH}/blob/main/${it.path}`);
+    const menuItems = [
+      { label: 'View source on GitHub', href: srcHref },
+      ...(it.external ? [] : [{ label: 'Edit on GitHub', href: `${GH}/edit/main/${type === 'plugin' ? it.path + '/.claude-plugin/plugin.json' : it.path}` }]),
+      { label: 'Report a problem', href: `${GH}/issues/new?template=problem-report.yml&title=${encodeURIComponent('[' + pluginName + '] ')}&artifact=${encodeURIComponent(it.path || '')}` },
+    ];
+    return {
+      rootRef: this.rootRef, fieldRef: this.fieldRef, item: it,
+      titleId: this.uid + '-t', descId: this.uid + '-d', tipId: this.uid + '-tip', panelId: this.uid + '-p',
+      enter: () => this.setState({ hover: true }), leave: () => this.setState({ hover: false, tip: false }),
+      onKey: e => { if (e.key === 'Escape' && (s.menu || s.tip)) this.setState({ menu: false, tip: false }); },
+      borderColor: lift ? 'var(--border-strong)' : 'var(--border)',
+      shadow: lift ? 'var(--shadow)' : 'none',
+      badgeBg: `var(--b-${type}-bg)`, badgeFg: `var(--b-${type}-fg)`, typeLabel: LABEL[type],
+      topRight: type === 'plugin' ? (it.category || '') : it.plugin,
+      titleSegs: segs(it.title, terms),
+      countsLine,
+      hasDesc: !!it.description, noDesc: !it.description,
+      descSegs: segs(it.description, terms),
+      clamp: s.expanded ? 'unset' : 3,
+      hasTags: tags.length > 0, tags, moreTags: extra > 0 ? '+' + extra : '',
+      hasTokens: it.tokens > 0, tokensLine: `~${it.tokens} tokens always loaded`, pluginName,
+      tip: s.tip, tipOn: () => this.setState({ tip: true }), tipOff: () => this.setState({ tip: false }),
+      updated: rel(it.updatedAt),
+      expanded: s.expanded, expandedStr: String(s.expanded),
+      showComponents: comps.length > 0, components: comps,
+      componentsHeading: type === 'plugin' ? 'Contents' : 'Also in ' + it.plugin,
+      sourcePath: it.external ? (it.sourceUrl || '').replace('https://', '') : (type === 'plugin' ? it.path + '/' : it.path),
+      sourceHost: 'source repository',
+      btnH: touch ? 44 : 34, menuH: touch ? 44 : 34,
+      showCopyBtn: !s.fallback, fallback: s.fallback,
+      copied: s.copied, notCopied: !s.copied,
+      copyColor: s.copied ? 'var(--success)' : 'var(--text)',
+      copyAria: s.copied ? 'Copied install command' : 'Copy install command: ' + it.install,
+      copy: this.copy,
+      selectAll: e => e.target.select(),
+      endFallback: () => { if (!this.props.forceState) this.setState({ fallback: false }); },
+      inBundle, notInBundle: !inBundle, inBundleStr: String(!!inBundle),
+      bundleLabel: inBundle ? 'In bundle' : (type === 'plugin' ? 'Bundle' : 'Plugin'),
+      bundleAria: inBundle ? `${pluginName} is in your bundle — remove` : (type === 'plugin' ? `Add ${pluginName} to bundle` : `Add plugin ${pluginName} to bundle`),
+      bBg: inBundle ? 'var(--accent-soft)' : 'var(--surface)',
+      bBorder: inBundle ? 'var(--accent)' : 'var(--border-strong)',
+      bColor: inBundle ? 'var(--text)' : 'var(--text)',
+      toggleBundle: () => { if (this.props.onToggleBundle) this.props.onToggleBundle(pluginName); else this.setState({ localBundle: !s.localBundle }); },
+      toggleExpand: () => this.setState({ expanded: !s.expanded }),
+      expandAria: s.expanded ? 'Show less' : 'Show details',
+      expBg: s.expanded ? 'var(--surface-2)' : 'transparent',
+      chevron: s.expanded ? 'rotate(180deg)' : 'none',
+      menu: s.menu, menuStr: String(s.menu), menuBg: s.menu ? 'var(--surface-2)' : 'transparent',
+      toggleMenu: () => this.setState({ menu: !s.menu }),
+      menuItems,
+    };
+  }
+}
+</script>
+</body>
+</html>

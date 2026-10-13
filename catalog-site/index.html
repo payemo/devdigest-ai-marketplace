@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DevDigest Marketplace</title>
+    <meta name="description" content="Find skills, agents and plugins for Claude Code and install them with one copy-paste." />
+    <script>
+      // Apply the saved theme before first paint to avoid a light/dark flash.
+      try {
+        var t = localStorage.getItem('ddm-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <div class="noscript">
+        <strong>This site needs JavaScript to search.</strong>
+        You can browse every plugin in the <a href="https://github.com/payemo/devdigest-ai-marketplace">repository on GitHub</a>.
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

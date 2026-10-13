@@ -1,0 +1,867 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-13T09:00:00Z",
+  "commit": "a1b2c3d",
+  "marketplace": {
+    "name": "devdigest-marketplace",
+    "description": "Sample catalog data from the design prototype.",
+    "owner": "DevDigest",
+    "repo": "payemo/devdigest-ai-marketplace",
+    "branch": "main",
+    "baseUrl": "https://payemo.github.io/devdigest-ai-marketplace/"
+  },
+  "categories": [
+    "docs",
+    "quality",
+    "security",
+    "workflow"
+  ],
+  "artifacts": [
+    {
+      "id": "plugin:hello-devdigest",
+      "type": "plugin",
+      "name": "hello-devdigest",
+      "title": "hello-devdigest",
+      "description": "Sample plugin that greets the user and confirms the marketplace is installed correctly.",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "sample",
+        "demo"
+      ],
+      "category": null,
+      "path": "plugins/hello-devdigest",
+      "install": "/plugin install hello-devdigest@devdigest-marketplace",
+      "external": false,
+      "updatedAt": "2026-10-12",
+      "tokens": 43,
+      "counts": {
+        "skills": 1,
+        "commands": 1,
+        "hooks": 1
+      },
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "hello-devdigest",
+      "tags": [
+        "sample",
+        "demo"
+      ],
+      "category": null,
+      "updatedAt": "2026-10-12",
+      "external": false,
+      "install": "/plugin install hello-devdigest@devdigest-marketplace",
+      "id": "skill:hello-devdigest/hello",
+      "name": "hello",
+      "title": "hello",
+      "description": "Greets the user and confirms that the DevDigest marketplace plugin is installed and loading skills correctly.",
+      "path": "plugins/hello-devdigest/skills/hello/SKILL.md",
+      "invoke": "/hello-devdigest:hello",
+      "tokens": 29,
+      "text": ""
+    },
+    {
+      "type": "command",
+      "plugin": "hello-devdigest",
+      "tags": [
+        "sample",
+        "demo"
+      ],
+      "category": null,
+      "updatedAt": "2026-10-12",
+      "external": false,
+      "install": "/plugin install hello-devdigest@devdigest-marketplace",
+      "id": "command:hello-devdigest/hello",
+      "name": "hello",
+      "title": "hello",
+      "description": "Print a greeting and the installed plugin version.",
+      "path": "plugins/hello-devdigest/commands/hello.md",
+      "invoke": "/hello-devdigest:hello",
+      "tokens": 14,
+      "text": ""
+    },
+    {
+      "type": "hook",
+      "plugin": "hello-devdigest",
+      "tags": [
+        "sample",
+        "demo"
+      ],
+      "category": null,
+      "updatedAt": "2026-10-05",
+      "external": false,
+      "install": "/plugin install hello-devdigest@devdigest-marketplace",
+      "id": "hook:hello-devdigest/SessionStart:startup",
+      "name": "SessionStart",
+      "title": "SessionStart · startup",
+      "description": "Runs on SessionStart for startup",
+      "path": "plugins/hello-devdigest/hooks/hooks.json",
+      "invoke": null,
+      "tokens": 0,
+      "text": ""
+    },
+    {
+      "id": "plugin:code-review",
+      "type": "plugin",
+      "name": "code-review",
+      "title": "code-review",
+      "description": "Structured pull-request review: correctness, readability, test coverage and risk, with inline suggestions.",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "review",
+        "pull-requests",
+        "quality"
+      ],
+      "category": "quality",
+      "path": "plugins/code-review",
+      "install": "/plugin install code-review@devdigest-marketplace",
+      "external": false,
+      "updatedAt": "2026-10-09",
+      "tokens": 96,
+      "counts": {
+        "skills": 2,
+        "agents": 1,
+        "commands": 1,
+        "hooks": 1
+      },
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "code-review",
+      "tags": [
+        "review",
+        "pull-requests",
+        "quality"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-10-09",
+      "external": false,
+      "install": "/plugin install code-review@devdigest-marketplace",
+      "id": "skill:code-review/review-pr",
+      "name": "review-pr",
+      "title": "review-pr",
+      "description": "Reviews a pull request diff and produces a prioritized list of findings with suggested fixes.",
+      "path": "plugins/code-review/skills/review-pr/SKILL.md",
+      "invoke": "/code-review:review-pr",
+      "tokens": 26,
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "code-review",
+      "tags": [
+        "review",
+        "pull-requests",
+        "quality"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-09-30",
+      "external": false,
+      "install": "/plugin install code-review@devdigest-marketplace",
+      "id": "skill:code-review/review-checklist",
+      "name": "review-checklist",
+      "title": "review-checklist",
+      "description": "Applies your team's review checklist to staged changes before you open a pull request.",
+      "path": "plugins/code-review/skills/review-checklist/SKILL.md",
+      "invoke": "/code-review:review-checklist",
+      "tokens": 26,
+      "text": ""
+    },
+    {
+      "type": "agent",
+      "plugin": "code-review",
+      "tags": [
+        "review",
+        "pull-requests",
+        "quality"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-10-09",
+      "external": false,
+      "install": "/plugin install code-review@devdigest-marketplace",
+      "id": "agent:code-review/code-reviewer",
+      "name": "code-reviewer",
+      "title": "code-reviewer",
+      "description": "Senior reviewer subagent that audits diffs for bugs, unhandled edge cases and unclear naming.",
+      "path": "plugins/code-review/agents/code-reviewer.md",
+      "invoke": "code-review:code-reviewer",
+      "tokens": 27,
+      "text": ""
+    },
+    {
+      "type": "command",
+      "plugin": "code-review",
+      "tags": [
+        "review",
+        "pull-requests",
+        "quality"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-09-30",
+      "external": false,
+      "install": "/plugin install code-review@devdigest-marketplace",
+      "id": "command:code-review/review",
+      "name": "review",
+      "title": "review",
+      "description": "Review the current branch against main and summarize the risk.",
+      "path": "plugins/code-review/commands/review.md",
+      "invoke": "/code-review:review",
+      "tokens": 17,
+      "text": ""
+    },
+    {
+      "type": "hook",
+      "plugin": "code-review",
+      "tags": [
+        "review",
+        "pull-requests",
+        "quality"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-09-30",
+      "external": false,
+      "install": "/plugin install code-review@devdigest-marketplace",
+      "id": "hook:code-review/PreToolUse:Bash",
+      "name": "PreToolUse",
+      "title": "PreToolUse · Bash",
+      "description": "Runs on PreToolUse for Bash",
+      "path": "plugins/code-review/hooks/hooks.json",
+      "invoke": null,
+      "tokens": 0,
+      "text": ""
+    },
+    {
+      "id": "plugin:commit-craft",
+      "type": "plugin",
+      "name": "commit-craft",
+      "title": "commit-craft",
+      "description": "Writes conventional commit messages and changelog entries from staged changes.",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "git",
+        "commits",
+        "changelog"
+      ],
+      "category": "workflow",
+      "path": "plugins/commit-craft",
+      "install": "/plugin install commit-craft@devdigest-marketplace",
+      "external": false,
+      "updatedAt": "2026-10-05",
+      "tokens": 61,
+      "counts": {
+        "skills": 1,
+        "commands": 2
+      },
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "commit-craft",
+      "tags": [
+        "git",
+        "commits",
+        "changelog"
+      ],
+      "category": "workflow",
+      "updatedAt": "2026-10-05",
+      "external": false,
+      "install": "/plugin install commit-craft@devdigest-marketplace",
+      "id": "skill:commit-craft/commit-message",
+      "name": "commit-message",
+      "title": "commit-message",
+      "description": "Drafts a Conventional Commits message from the staged diff, with scope and a breaking-change footer when needed.",
+      "path": "plugins/commit-craft/skills/commit-message/SKILL.md",
+      "invoke": "/commit-craft:commit-message",
+      "tokens": 32,
+      "text": ""
+    },
+    {
+      "type": "command",
+      "plugin": "commit-craft",
+      "tags": [
+        "git",
+        "commits",
+        "changelog"
+      ],
+      "category": "workflow",
+      "updatedAt": "2026-09-22",
+      "external": false,
+      "install": "/plugin install commit-craft@devdigest-marketplace",
+      "id": "command:commit-craft/commit",
+      "name": "commit",
+      "title": "commit",
+      "description": "Stage, describe and commit in one step.",
+      "path": "plugins/commit-craft/commands/commit.md",
+      "invoke": "/commit-craft:commit",
+      "tokens": 12,
+      "text": ""
+    },
+    {
+      "type": "command",
+      "plugin": "commit-craft",
+      "tags": [
+        "git",
+        "commits",
+        "changelog"
+      ],
+      "category": "workflow",
+      "updatedAt": "2026-09-22",
+      "external": false,
+      "install": "/plugin install commit-craft@devdigest-marketplace",
+      "id": "command:commit-craft/changelog",
+      "name": "changelog",
+      "title": "changelog",
+      "description": "Append unreleased changes to CHANGELOG.md, grouped by type.",
+      "path": "plugins/commit-craft/commands/changelog.md",
+      "invoke": "/commit-craft:changelog",
+      "tokens": 17,
+      "text": ""
+    },
+    {
+      "id": "plugin:test-pilot",
+      "type": "plugin",
+      "name": "test-pilot",
+      "title": "test-pilot",
+      "description": "Generates and repairs unit tests, and explains failing test output in plain language.",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "testing",
+        "jest",
+        "pytest"
+      ],
+      "category": "quality",
+      "path": "plugins/test-pilot",
+      "install": "/plugin install test-pilot@devdigest-marketplace",
+      "external": false,
+      "updatedAt": "2026-09-28",
+      "tokens": 70,
+      "counts": {
+        "skills": 2,
+        "agents": 1,
+        "hooks": 1
+      },
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "test-pilot",
+      "tags": [
+        "testing",
+        "jest",
+        "pytest"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-09-28",
+      "external": false,
+      "install": "/plugin install test-pilot@devdigest-marketplace",
+      "id": "skill:test-pilot/write-tests",
+      "name": "write-tests",
+      "title": "write-tests",
+      "description": "Writes focused unit tests for the selected function, matching the project's existing test framework.",
+      "path": "plugins/test-pilot/skills/write-tests/SKILL.md",
+      "invoke": "/test-pilot:write-tests",
+      "tokens": 28,
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "test-pilot",
+      "tags": [
+        "testing",
+        "jest",
+        "pytest"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-09-28",
+      "external": false,
+      "install": "/plugin install test-pilot@devdigest-marketplace",
+      "id": "skill:test-pilot/fix-failing-test",
+      "name": "fix-failing-test",
+      "title": "fix-failing-test",
+      "description": "Reads a failing test run, finds the cause and proposes the smallest fix.",
+      "path": "plugins/test-pilot/skills/fix-failing-test/SKILL.md",
+      "invoke": "/test-pilot:fix-failing-test",
+      "tokens": 22,
+      "text": ""
+    },
+    {
+      "type": "agent",
+      "plugin": "test-pilot",
+      "tags": [
+        "testing",
+        "jest",
+        "pytest"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-09-15",
+      "external": false,
+      "install": "/plugin install test-pilot@devdigest-marketplace",
+      "id": "agent:test-pilot/test-runner",
+      "name": "test-runner",
+      "title": "test-runner",
+      "description": "Runs the test suite in the background and reports only new failures.",
+      "path": "plugins/test-pilot/agents/test-runner.md",
+      "invoke": "test-pilot:test-runner",
+      "tokens": 20,
+      "text": ""
+    },
+    {
+      "type": "hook",
+      "plugin": "test-pilot",
+      "tags": [
+        "testing",
+        "jest",
+        "pytest"
+      ],
+      "category": "quality",
+      "updatedAt": "2026-09-28",
+      "external": false,
+      "install": "/plugin install test-pilot@devdigest-marketplace",
+      "id": "hook:test-pilot/PostToolUse:Edit|Write",
+      "name": "PostToolUse",
+      "title": "PostToolUse · Edit|Write",
+      "description": "Runs on PostToolUse for Edit|Write",
+      "path": "plugins/test-pilot/hooks/hooks.json",
+      "invoke": null,
+      "tokens": 0,
+      "text": ""
+    },
+    {
+      "id": "plugin:docs-writer",
+      "type": "plugin",
+      "name": "docs-writer",
+      "title": "docs-writer",
+      "description": "Drafts READMEs, API references and architecture decision records from your source code.",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "docs",
+        "readme",
+        "adr"
+      ],
+      "category": "docs",
+      "path": "plugins/docs-writer",
+      "install": "/plugin install docs-writer@devdigest-marketplace",
+      "external": false,
+      "updatedAt": "2026-10-01",
+      "tokens": 77,
+      "counts": {
+        "skills": 2,
+        "agents": 1,
+        "commands": 1,
+        "mcp": 1
+      },
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "docs-writer",
+      "tags": [
+        "docs",
+        "readme",
+        "adr"
+      ],
+      "category": "docs",
+      "updatedAt": "2026-09-26",
+      "external": false,
+      "install": "/plugin install docs-writer@devdigest-marketplace",
+      "id": "skill:docs-writer/readme",
+      "name": "readme",
+      "title": "readme",
+      "description": "Generates or updates a README with install, usage and configuration sections.",
+      "path": "plugins/docs-writer/skills/readme/SKILL.md",
+      "invoke": "/docs-writer:readme",
+      "tokens": 21,
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "docs-writer",
+      "tags": [
+        "docs",
+        "readme",
+        "adr"
+      ],
+      "category": "docs",
+      "updatedAt": "2026-09-26",
+      "external": false,
+      "install": "/plugin install docs-writer@devdigest-marketplace",
+      "id": "skill:docs-writer/adr",
+      "name": "adr",
+      "title": "adr",
+      "description": "Writes an architecture decision record from a short description of the decision.",
+      "path": "plugins/docs-writer/skills/adr/SKILL.md",
+      "invoke": "/docs-writer:adr",
+      "tokens": 21,
+      "text": ""
+    },
+    {
+      "type": "agent",
+      "plugin": "docs-writer",
+      "tags": [
+        "docs",
+        "readme",
+        "adr"
+      ],
+      "category": "docs",
+      "updatedAt": "2026-09-26",
+      "external": false,
+      "install": "/plugin install docs-writer@devdigest-marketplace",
+      "id": "agent:docs-writer/docs-editor",
+      "name": "docs-editor",
+      "title": "docs-editor",
+      "description": "Edits documentation for clarity, consistent terminology and broken links.",
+      "path": "plugins/docs-writer/agents/docs-editor.md",
+      "invoke": "docs-writer:docs-editor",
+      "tokens": 21,
+      "text": ""
+    },
+    {
+      "type": "command",
+      "plugin": "docs-writer",
+      "tags": [
+        "docs",
+        "readme",
+        "adr"
+      ],
+      "category": "docs",
+      "updatedAt": "2026-09-26",
+      "external": false,
+      "install": "/plugin install docs-writer@devdigest-marketplace",
+      "id": "command:docs-writer/docs",
+      "name": "docs",
+      "title": "docs",
+      "description": "Generate an API reference for the current module.",
+      "path": "plugins/docs-writer/commands/docs.md",
+      "invoke": "/docs-writer:docs",
+      "tokens": 14,
+      "text": ""
+    },
+    {
+      "type": "mcp",
+      "plugin": "docs-writer",
+      "tags": [
+        "docs",
+        "readme",
+        "adr"
+      ],
+      "category": "docs",
+      "updatedAt": "2026-10-01",
+      "external": false,
+      "install": "/plugin install docs-writer@devdigest-marketplace",
+      "id": "mcp:docs-writer/docs-search",
+      "name": "docs-search",
+      "title": "docs-search",
+      "description": "npx -y @devdigest/docs-search-mcp",
+      "path": "plugins/docs-writer/.mcp.json",
+      "invoke": null,
+      "tokens": 0,
+      "text": ""
+    },
+    {
+      "id": "plugin:security-sentinel",
+      "type": "plugin",
+      "name": "security-sentinel",
+      "title": "security-sentinel",
+      "description": "Scans changes for secrets, risky dependencies and injection patterns before they are committed.",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "security",
+        "secrets",
+        "dependencies"
+      ],
+      "category": "security",
+      "path": "plugins/security-sentinel",
+      "install": "/plugin install security-sentinel@devdigest-marketplace",
+      "external": false,
+      "updatedAt": "2026-09-18",
+      "tokens": 47,
+      "counts": {
+        "skills": 1,
+        "agents": 1,
+        "hooks": 1,
+        "mcp": 1
+      },
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "security-sentinel",
+      "tags": [
+        "security",
+        "secrets",
+        "dependencies"
+      ],
+      "category": "security",
+      "updatedAt": "2026-09-18",
+      "external": false,
+      "install": "/plugin install security-sentinel@devdigest-marketplace",
+      "id": "skill:security-sentinel/secret-scan",
+      "name": "secret-scan",
+      "title": "secret-scan",
+      "description": "Finds API keys, tokens and private keys in staged files and explains how to rotate them.",
+      "path": "plugins/security-sentinel/skills/secret-scan/SKILL.md",
+      "invoke": "/security-sentinel:secret-scan",
+      "tokens": 25,
+      "text": ""
+    },
+    {
+      "type": "agent",
+      "plugin": "security-sentinel",
+      "tags": [
+        "security",
+        "secrets",
+        "dependencies"
+      ],
+      "category": "security",
+      "updatedAt": "2026-09-10",
+      "external": false,
+      "install": "/plugin install security-sentinel@devdigest-marketplace",
+      "id": "agent:security-sentinel/threat-modeler",
+      "name": "threat-modeler",
+      "title": "threat-modeler",
+      "description": "Walks through a feature design and lists likely threats with mitigations.",
+      "path": "plugins/security-sentinel/agents/threat-modeler.md",
+      "invoke": "security-sentinel:threat-modeler",
+      "tokens": 22,
+      "text": ""
+    },
+    {
+      "type": "hook",
+      "plugin": "security-sentinel",
+      "tags": [
+        "security",
+        "secrets",
+        "dependencies"
+      ],
+      "category": "security",
+      "updatedAt": "2026-09-18",
+      "external": false,
+      "install": "/plugin install security-sentinel@devdigest-marketplace",
+      "id": "hook:security-sentinel/PreToolUse:Write",
+      "name": "PreToolUse",
+      "title": "PreToolUse · Write",
+      "description": "Runs on PreToolUse for Write",
+      "path": "plugins/security-sentinel/hooks/hooks.json",
+      "invoke": null,
+      "tokens": 0,
+      "text": ""
+    },
+    {
+      "type": "mcp",
+      "plugin": "security-sentinel",
+      "tags": [
+        "security",
+        "secrets",
+        "dependencies"
+      ],
+      "category": "security",
+      "updatedAt": "2026-09-10",
+      "external": false,
+      "install": "/plugin install security-sentinel@devdigest-marketplace",
+      "id": "mcp:security-sentinel/osv",
+      "name": "osv",
+      "title": "osv",
+      "description": "npx -y osv-mcp-server",
+      "path": "plugins/security-sentinel/.mcp.json",
+      "invoke": null,
+      "tokens": 0,
+      "text": ""
+    },
+    {
+      "id": "plugin:pr-assistant",
+      "type": "plugin",
+      "name": "pr-assistant",
+      "title": "pr-assistant",
+      "description": "Opens, updates and summarizes GitHub pull requests from the terminal.",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "github",
+        "pull-requests"
+      ],
+      "category": "workflow",
+      "path": "plugins/pr-assistant",
+      "install": "/plugin install pr-assistant@devdigest-marketplace",
+      "external": true,
+      "updatedAt": "2026-09-20",
+      "tokens": 0,
+      "counts": {},
+      "sourceUrl": "https://github.com/devdigest/pr-assistant",
+      "text": ""
+    },
+    {
+      "id": "plugin:internationalization-and-localization-string-extractor",
+      "type": "plugin",
+      "name": "internationalization-and-localization-string-extractor",
+      "title": "internationalization-and-localization-string-extractor",
+      "description": "",
+      "plugin": null,
+      "invoke": null,
+      "tags": [
+        "i18n",
+        "l10n",
+        "strings",
+        "translation"
+      ],
+      "category": "docs",
+      "path": "plugins/internationalization-and-localization-string-extractor",
+      "install": "/plugin install internationalization-and-localization-string-extractor@devdigest-marketplace",
+      "external": false,
+      "updatedAt": "2026-08-30",
+      "tokens": 24,
+      "counts": {
+        "skills": 1,
+        "commands": 1
+      },
+      "text": ""
+    },
+    {
+      "type": "skill",
+      "plugin": "internationalization-and-localization-string-extractor",
+      "tags": [
+        "i18n",
+        "l10n",
+        "strings",
+        "translation"
+      ],
+      "category": "docs",
+      "updatedAt": "2026-08-30",
+      "external": false,
+      "install": "/plugin install internationalization-and-localization-string-extractor@devdigest-marketplace",
+      "id": "skill:internationalization-and-localization-string-extractor/extract-strings",
+      "name": "extract-strings",
+      "title": "extract-strings",
+      "description": "",
+      "path": "plugins/internationalization-and-localization-string-extractor/skills/extract-strings/SKILL.md",
+      "invoke": "/internationalization-and-localization-string-extractor:extract-strings",
+      "tokens": 4,
+      "text": ""
+    },
+    {
+      "type": "command",
+      "plugin": "internationalization-and-localization-string-extractor",
+      "tags": [
+        "i18n",
+        "l10n",
+        "strings",
+        "translation"
+      ],
+      "category": "docs",
+      "updatedAt": "2026-08-30",
+      "external": false,
+      "install": "/plugin install internationalization-and-localization-string-extractor@devdigest-marketplace",
+      "id": "command:internationalization-and-localization-string-extractor/sync-locales",
+      "name": "sync-locales",
+      "title": "sync-locales",
+      "description": "Sync locale files with the source language and flag missing keys.",
+      "path": "plugins/internationalization-and-localization-string-extractor/commands/sync-locales.md",
+      "invoke": "/internationalization-and-localization-string-extractor:sync-locales",
+      "tokens": 20,
+      "text": ""
+    }
+  ],
+  "changes": [
+    {
+      "date": "2026-10-12",
+      "sha": "a1b2c3d",
+      "subject": "Add greeting skill",
+      "plugins": [
+        "hello-devdigest"
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "sha": "e4f5a6b",
+      "subject": "Add catalog site spec",
+      "plugins": []
+    },
+    {
+      "date": "2026-10-09",
+      "sha": "7c81d02",
+      "subject": "Review agent: flag unhandled promise rejections",
+      "plugins": [
+        "code-review"
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "sha": "3fe90aa",
+      "subject": "Bump plugin versions for release 0.4.0",
+      "plugins": [
+        "code-review",
+        "test-pilot",
+        "docs-writer"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "sha": "b52c1e9",
+      "subject": "Commit skill: support breaking-change footers",
+      "plugins": [
+        "commit-craft"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "sha": "0d4e7f3",
+      "subject": "Add SessionStart hook to sample plugin",
+      "plugins": [
+        "hello-devdigest"
+      ]
+    },
+    {
+      "date": "2026-10-01",
+      "sha": "91aa4c6",
+      "subject": "docs-writer: add docs-search MCP server",
+      "plugins": [
+        "docs-writer"
+      ]
+    },
+    {
+      "date": "2026-09-28",
+      "sha": "c3d7e12",
+      "subject": "test-pilot: run tests after edits",
+      "plugins": [
+        "test-pilot"
+      ]
+    },
+    {
+      "date": "2026-09-24",
+      "sha": "5e6f8a0",
+      "subject": "Lint: require description in SKILL.md frontmatter",
+      "plugins": []
+    },
+    {
+      "date": "2026-09-20",
+      "sha": "f12b9d4",
+      "subject": "Add pr-assistant (external source)",
+      "plugins": [
+        "pr-assistant"
+      ]
+    },
+    {
+      "date": "2026-09-18",
+      "sha": "8a03c5b",
+      "subject": "security-sentinel: scan staged files only",
+      "plugins": [
+        "security-sentinel"
+      ]
+    },
+    {
+      "date": "2026-08-30",
+      "sha": "6b7d2e1",
+      "subject": "Add i18n string extractor",
+      "plugins": [
+        "internationalization-and-localization-string-extractor"
+      ]
+    }
+  ]
+}
