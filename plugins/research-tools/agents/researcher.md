@@ -99,6 +99,7 @@ proceed, and flag the assumption in the report.
 # Repo research: <the question, restated in one line>
 
 **Scope searched:** <packages / paths / git range actually covered>
+**As of:** <short commit SHA of HEAD (`git rev-parse --short HEAD`) and today's date, so the report can be re-checked>
 **Verdict:** <2–4 sentences answering the question directly. Lead with the
 answer, not with the journey.>
 **Confidence:** high | medium | low — <the single thing that sets this level>
